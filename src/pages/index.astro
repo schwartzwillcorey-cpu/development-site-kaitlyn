@@ -12,13 +12,17 @@ const featuredHomes = getFeaturedProperties();
 ---
 
 <BaseLayout
-  title="Kelly Development Group"
-  description="Browse quality new construction homes in Maplewood Heights and Riverside Estates. Clean, move-in ready homes in Greenfield County."
+  title="Kaitlyn Beebe — Realtor"
+  description="Browse quality new construction homes in Park Central and Grace Haven. Clean, move-in ready homes listed by Kaitlyn Beebe, Realtor."
 >
 
   <!-- ── Hero ────────────────────────────────────────────────── -->
   <section class="hero">
-    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-bg" aria-hidden="true">
+      {/* Drop your hero image at public/images/hero.jpg and it will appear here */}
+      <img src="/images/hero.jpg" alt="" class="hero-img" />
+      <div class="hero-overlay"></div>
+    </div>
     <div class="container hero-inner">
       <div class="hero-content">
         <p class="section-label">New Construction Homes</p>
@@ -26,7 +30,7 @@ const featuredHomes = getFeaturedProperties();
           Find your home in a community you'll love.
         </h1>
         <p class="hero-sub">
-          Quality new construction homes across two established Greenfield County communities. Clean finishes, thoughtful layouts, and neighborhoods worth settling into.
+          Quality new construction homes across two communities. Clean finishes, thoughtful layouts, and neighborhoods worth settling into.
         </p>
         <div class="hero-actions">
           <a href="/communities" class="btn btn-primary">Browse Communities</a>
@@ -49,7 +53,7 @@ const featuredHomes = getFeaturedProperties();
             attention to detail that shows up years after move-in — not just on opening day.
           </p>
           <p class="overview-body" style="margin-top: 1rem;">
-            Currently available homes span two communities in Greenfield County.
+            Currently available homes span two communities.
             Browse both, or scan the QR code on any sign to go directly to that community's listings.
           </p>
         </div>
@@ -134,11 +138,11 @@ const featuredHomes = getFeaturedProperties();
             <!-- Update with real contact details before launch -->
             <li>
               <span class="contact-detail-label">Email</span>
-              <a href="mailto:hello@kellydevelopmentgroup.com">hello@kellydevelopmentgroup.com</a>
+              <a href="mailto:kaitlyn@housemoomaw.com">kaitlyn@housemoomaw.com</a>
             </li>
             <li>
               <span class="contact-detail-label">Phone</span>
-              <a href="tel:+15550000000">(555) 000-0000</a>
+              <a href="tel:+19039109283">(903) 910-9283</a>
             </li>
           </ul>
         </div>
@@ -167,8 +171,29 @@ const featuredHomes = getFeaturedProperties();
   .hero-bg {
     position: absolute;
     inset: 0;
+    /* Fallback color shown while image loads or if no image is present */
     background: linear-gradient(135deg, var(--color-primary) 0%, #1a3328 100%);
     z-index: 0;
+  }
+
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    /* Hidden automatically if the image 404s — fallback gradient shows through */
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(10, 30, 20, 0.72) 0%,
+      rgba(10, 30, 20, 0.45) 100%
+    );
   }
 
   .hero-inner {
@@ -319,9 +344,47 @@ const featuredHomes = getFeaturedProperties();
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 640px) {
+    /* Hero */
+    .hero {
+      min-height: 440px;
+    }
+    .hero-inner {
+      padding-block: var(--space-16);
+    }
+    .hero-sub {
+      font-size: var(--font-size-base);
+      max-width: 100%;
+    }
     .hero-actions {
       flex-direction: column;
+      width: 100%;
+    }
+    .hero-actions .btn,
+    .hero-actions .btn-ghost {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Stats */
+    .overview-stats {
+      grid-template-columns: 1fr 1fr;
+    }
+    .stat-number {
+      font-size: var(--font-size-2xl);
+    }
+  }
+
+  @media (max-width: 400px) {
+    .hero {
+      min-height: 380px;
+    }
+    .overview-stats {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    .stat {
+      padding: var(--space-4);
     }
   }
 </style>

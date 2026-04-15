@@ -41,7 +41,7 @@ export const properties: Property[] = [
     description:
       'A well-designed 3-bedroom home with an open kitchen and living area, vaulted ceilings, and a large backyard. The primary suite is on the main floor. Attached two-car garage. Everything you need, nothing you don\'t.',
     featured: true,
-    images: ['https://placehold.co/1200x750/3d6b4f/ffffff?text=Park+Central+Lot+4'],
+    images: ['/images/properties/kailyn home dev shot 2.jpg'],
     externalListingUrl: '',
   },
   {
@@ -59,7 +59,7 @@ export const properties: Property[] = [
     description:
       'Move-in ready 3-bedroom home on a corner lot with excellent natural light. Modern kitchen with stainless appliances, hardwood floors throughout main living areas, and a covered back patio.',
     featured: false,
-    images: ['https://placehold.co/1200x750/4a7c5e/ffffff?text=Park+Central+Lot+7'],
+    images: ['/images/properties/kaitlyn house shot..jpg'],
     externalListingUrl: '',
   },
   {
@@ -77,7 +77,7 @@ export const properties: Property[] = [
     description:
       'Spacious 4-bedroom home with an open-plan main floor, quartz countertops, and a large covered deck. Cul-de-sac location with minimal through traffic.',
     featured: true,
-    images: ['https://placehold.co/1200x750/3d6b4f/ffffff?text=Park+Central+Lot+11'],
+    images: ['/images/properties/kailyn home dev shot 2.jpg'],
     externalListingUrl: '',
   },
   {
@@ -95,7 +95,7 @@ export const properties: Property[] = [
     description:
       'Ranch-style home with an open floor plan, split-bedroom layout, and a sunlit kitchen. Low-maintenance yard, attached garage, and located near the neighborhood trail entrance.',
     featured: false,
-    images: ['https://placehold.co/1200x750/4a7c5e/ffffff?text=Park+Central+Lot+14'],
+    images: ['/images/properties/kaitlyn house shot..jpg'],
     externalListingUrl: '',
   },
   {
@@ -113,7 +113,7 @@ export const properties: Property[] = [
     description:
       'This home has sold. Check back for similar homes in Park Central or browse available listings below.',
     featured: false,
-    images: ['https://placehold.co/1200x750/888888/ffffff?text=Sold'],
+    images: ['/images/properties/kailyn home dev shot 2.jpg'],
     externalListingUrl: '',
   },
   {
@@ -131,7 +131,7 @@ export const properties: Property[] = [
     description:
       'One of the larger homes in Park Central. Four bedrooms, two and a half baths, open kitchen, and a finished bonus room. Oversized lot with mature landscaping.',
     featured: true,
-    images: ['https://placehold.co/1200x750/3d6b4f/ffffff?text=Park+Central+Lot+22'],
+    images: ['/images/properties/kaitlyn house shot..jpg'],
     externalListingUrl: '',
   },
   {
@@ -149,7 +149,7 @@ export const properties: Property[] = [
     description:
       'Coming soon — construction nearing completion. Contact us to be first in line for a showing.',
     featured: false,
-    images: ['https://placehold.co/1200x750/4a7c5e/ffffff?text=Coming+Soon'],
+    images: ['/images/properties/kailyn home dev shot 2.jpg'],
     externalListingUrl: '',
   },
 
@@ -170,8 +170,8 @@ export const properties: Property[] = [
       'A modern open-concept home with a chef-inspired kitchen, engineered hardwood floors, and a covered rear patio. Energy-efficient construction throughout. One of the best values in Grace Haven.',
     featured: true,
     images: [
-      'https://placehold.co/1200x750/2d4a3e/ffffff?text=Grace+Haven+Lot+3',
-      'https://placehold.co/1200x750/3a5e4f/ffffff?text=Grace+Haven+Lot+3+%232',
+      '/images/properties/kaitlyn house shot..jpg',
+      '/images/properties/kailyn home dev shot 2.jpg',
     ],
     externalListingUrl: '',
   },
@@ -190,7 +190,7 @@ export const properties: Property[] = [
     description:
       'Clean, modern construction with an open floor plan and abundant natural light. Kitchen island seats four, primary bath has a walk-in shower, and the garage has an EV outlet pre-wired.',
     featured: false,
-    images: ['https://placehold.co/1200x750/2d4a3e/ffffff?text=Grace+Haven+Lot+5'],
+    images: ['/images/properties/kaitlyn house shot..jpg'],
     externalListingUrl: '',
   },
   {
@@ -208,7 +208,7 @@ export const properties: Property[] = [
     description:
       'Premium corner lot home with soaring 10-foot ceilings, a formal dining space, finished walk-out basement, and an expansive deck. One of the standout homes in Grace Haven.',
     featured: true,
-    images: ['https://placehold.co/1200x750/2d4a3e/ffffff?text=Grace+Haven+Lot+8'],
+    images: ['/images/properties/kailyn home dev shot 2.jpg'],
     externalListingUrl: '',
   },
   {
@@ -226,7 +226,7 @@ export const properties: Property[] = [
     description:
       'Four-bedroom home with a flexible open loft — perfect for a playroom, office, or reading room. Primary suite on the main floor, large laundry with built-ins, two-car garage with storage nook.',
     featured: false,
-    images: ['https://placehold.co/1200x750/3a5e4f/ffffff?text=Grace+Haven+Lot+12'],
+    images: ['/images/properties/kaitlyn house shot..jpg'],
     externalListingUrl: '',
   },
   {
@@ -244,7 +244,7 @@ export const properties: Property[] = [
     description:
       'Three-bedroom home with a powder room for guests, open kitchen overlooking the living area, and a private backyard with enough space for a garden or outdoor dining setup.',
     featured: false,
-    images: ['https://placehold.co/1200x750/2d4a3e/ffffff?text=Grace+Haven+Lot+15'],
+    images: ['/images/properties/kailyn home dev shot 2.jpg'],
     externalListingUrl: '',
   },
   {
@@ -262,7 +262,7 @@ export const properties: Property[] = [
     description:
       'This home has sold. Contact us for current availability or browse other homes in Grace Haven.',
     featured: false,
-    images: ['https://placehold.co/1200x750/888888/ffffff?text=Sold'],
+    images: ['/images/properties/kailyn home dev shot 2.jpg'],
     externalListingUrl: '',
   },
 ];

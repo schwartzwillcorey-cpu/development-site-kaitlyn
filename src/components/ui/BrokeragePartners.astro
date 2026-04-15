@@ -1,0 +1,110 @@
+---
+/**
+ * BrokeragePartners — displays brokerage/agency logos above the footer.
+ *
+ * To update or swap logos:
+ *   - Drop new image files into public/images/branding/
+ *   - Update the `partners` array below with the new src and alt text
+ *   - No other changes needed
+ */
+
+const partners = [
+  {
+    src: '/images/branding/moomaw-logo.jpg',
+    alt: 'House Moomaw Realty Group',
+    dark: false,
+  },
+  {
+    src: '/images/branding/regal-logo.png',
+    alt: 'Regal Realtors',
+    dark: false,
+  },
+];
+---
+
+<section class="brokerage-bar" aria-label="Brokerage Partners">
+  <div class="container">
+    <p class="brokerage-label">Brokerage Partners</p>
+    <div class="logo-row">
+      {partners.map((p) => (
+        <div class:list={['logo-card', p.dark ? 'logo-card--dark' : 'logo-card--light']}>
+          <img src={p.src} alt={p.alt} class="logo-img" />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .brokerage-bar {
+    background: #f7f7f5;
+    border-top: 1px solid #e8e4df;
+    padding-block: 48px;
+    width: 100%;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .brokerage-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #999;
+  }
+
+  .logo-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .logo-card {
+    border: 1px solid #e4e0db;
+    border-radius: 8px;
+    padding: 16px 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-card--light {
+    background: #ffffff;
+  }
+
+  .logo-card--dark {
+    background: #1a2e25;
+    border-color: #1a2e25;
+  }
+
+  .logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  @media (max-width: 480px) {
+    .brokerage-bar {
+      padding-block: 36px;
+    }
+    .logo-row {
+      gap: 20px;
+    }
+    .logo-card {
+      padding: 12px 18px;
+    }
+    .logo-img {
+      height: 36px;
+    }
+  }
+</style>

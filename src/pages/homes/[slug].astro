@@ -423,16 +423,30 @@ const formattedPrice = property.price.toLocaleString('en-US', {
   @media (max-width: 640px) {
     .gallery-grid {
       grid-template-columns: 1fr;
+      border-radius: var(--radius-lg);
     }
     .gallery-main {
       grid-row: auto;
-      height: 260px !important;
+      height: 240px !important;
+      min-height: unset;
     }
     .gallery-grid img {
       height: 200px;
     }
     .property-price-block {
       text-align: left;
+    }
+    .price-value {
+      font-size: var(--font-size-2xl);
+    }
+    .property-description {
+      padding: var(--space-5);
+    }
+  }
+
+  @media (max-width: 400px) {
+    .property-header-meta {
+      gap: var(--space-2);
     }
   }
 </style>

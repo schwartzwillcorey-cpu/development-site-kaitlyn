@@ -30,7 +30,7 @@ export const communities: Community[] = [
       'An affordable, welcoming community with thoughtfully designed homes — ideal for first-time buyers and growing families.',
     longDescription:
       'Park Central is built around the idea that quality housing should be within reach. Homes are designed with smart layouts, durable finishes, and just the right amount of space — nothing wasted, nothing missing. The neighborhood sits close to parks, schools, and everyday conveniences, making it a practical and comfortable place to call home. All homes are priced under $300,000.',
-    heroImage: 'https://placehold.co/1600x900/3d6b4f/ffffff?text=Park+Central',
+    heroImage: '/images/kailyn development shot overhead.jpg',
     location: 'Greenfield County',
     totalLots: 20,
     availableLots: 7,

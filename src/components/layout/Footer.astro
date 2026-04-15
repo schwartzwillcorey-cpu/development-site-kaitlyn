@@ -6,12 +6,24 @@ const year = new Date().getFullYear();
   <div class="container footer-inner">
     <div class="footer-brand">
       <a href="/" class="logo" aria-label="Home">
-        <span class="logo-mark">KDG</span>
-        <span class="logo-name">Kelly Development Group</span>
+        <span class="logo-mark">KB</span>
+        <span class="logo-name">Kaitlyn Beebe — Realtor</span>
       </a>
       <p class="footer-tagline">
-        Quality homes in communities you'll love to be part of.
+        Helping buyers find quality homes in communities they'll love.
       </p>
+
+      <div class="brokerage-logos">
+        <p class="brokerage-label">Brokerage Partners</p>
+        <div class="logos-row">
+          <div class="logo-card logo-card--light">
+            <img src="/images/branding/moomaw-logo.jpg" alt="House Moomaw Realty Group" class="brokerage-logo" />
+          </div>
+          <div class="logo-card logo-card--bare">
+            <img src="/images/branding/regal-logo.png" alt="Regal Realtors" class="brokerage-logo" />
+          </div>
+        </div>
+      </div>
     </div>
 
     <nav class="footer-nav" aria-label="Footer navigation">
@@ -30,8 +42,7 @@ const year = new Date().getFullYear();
 
   <div class="footer-bottom">
     <div class="container">
-      <p>&copy; {year} Kelly Development Group. All rights reserved.</p>
-      <!-- Placeholder — add real license / disclosure text before launch -->
+      <p>&copy; {year} Kaitlyn Beebe — Realtor. All rights reserved.</p>
     </div>
   </div>
 </footer>
@@ -84,6 +95,84 @@ const year = new Date().getFullYear();
     color: rgba(255,255,255,0.6);
     line-height: 1.6;
     max-width: 28ch;
+    margin-bottom: var(--space-6);
+  }
+
+  .brokerage-logos {
+    margin-top: var(--space-2);
+  }
+
+  .brokerage-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: var(--space-3);
+  }
+
+  .logos-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .logo-card {
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-card--light {
+    background: #fff;
+  }
+
+  .logo-card--bare {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .brokerage-logo {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Brokerage logos */
+  .brokerage-logos {
+    margin-top: var(--space-2);
+  }
+
+  .brokerage-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: var(--space-3);
+  }
+
+  .logos-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .brokerage-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    background: #fff;
+    padding: 4px 8px;
+    /* White background ensures logos read clearly on the dark footer */
   }
 
   /* Nav columns */

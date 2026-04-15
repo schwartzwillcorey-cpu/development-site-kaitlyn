@@ -24,7 +24,7 @@ const {
   ogImage = '/images/og-default.jpg',
 } = Astro.props;
 
-const siteTitle = 'Kelly Development Group';
+const siteTitle = 'Kaitlyn Beebe — Realtor';
 const fullTitle  = title === siteTitle ? title : `${title} | ${siteTitle}`;
 ---
 
@@ -40,6 +40,9 @@ const fullTitle  = title === siteTitle ? title : `${title} | ${siteTitle}`;
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:type" content="website" />
+
+    <!-- Mobile browser chrome color -->
+    <meta name="theme-color" content="#2D4A3E" />
 
     <!-- Favicon — replace with real assets before launch -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
