@@ -1,0 +1,85 @@
+---
+/**
+ * PropertyMeta — the beds/baths/sqft/price fact row on property detail pages.
+ */
+
+interface Props {
+  price: number;
+  beds: number;
+  baths: number;
+  sqft: number;
+  lotNumber: string;
+}
+
+const { price, beds, baths, sqft, lotNumber } = Astro.props;
+const formattedPrice = price.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+---
+
+<ul class="property-meta">
+  <li class="meta-item">
+    <span class="meta-value">{formattedPrice}</span>
+    <span class="meta-label">List Price</span>
+  </li>
+  <li class="meta-item">
+    <span class="meta-value">{beds}</span>
+    <span class="meta-label">Bedrooms</span>
+  </li>
+  <li class="meta-item">
+    <span class="meta-value">{baths}</span>
+    <span class="meta-label">Bathrooms</span>
+  </li>
+  <li class="meta-item">
+    <span class="meta-value">{sqft.toLocaleString()}</span>
+    <span class="meta-label">Sq Ft</span>
+  </li>
+  <li class="meta-item">
+    <span class="meta-value">{lotNumber}</span>
+    <span class="meta-label">Lot</span>
+  </li>
+</ul>
+
+<style>
+  .property-meta {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-6);
+    min-width: 90px;
+    gap: var(--space-1);
+  }
+
+  .meta-value {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+
+  .meta-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+
+  @media (max-width: 480px) {
+    .property-meta {
+      gap: var(--space-2);
+    }
+    .meta-item {
+      flex: 1 1 calc(50% - var(--space-2));
+      min-width: unset;
+    }
+  }
+</style>

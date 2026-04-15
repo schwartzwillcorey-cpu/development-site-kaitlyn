@@ -1,0 +1,286 @@
+---
+/**
+ * Individual community page — /communities/[slug]
+ *
+ * This is the page the reusable QR codes point to.
+ * All properties for this community are shown immediately.
+ * Search/filter is a convenience, not a gate.
+ */
+
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import PropertyCard from '../../components/ui/PropertyCard.astro';
+import PropertySearch from '../../components/search/PropertySearch.astro';
+import CTASection from '../../components/ui/CTASection.astro';
+import InquiryForm from '../../components/ui/InquiryForm.astro';
+
+import { communities, getCommunityBySlug } from '../../data/communities';
+import { getPropertiesByCommunity } from '../../data/properties';
+
+// Tell Astro which slugs to generate pages for
+export async function getStaticPaths() {
+  return communities.map((c) => ({
+    params: { slug: c.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const community = getCommunityBySlug(slug!);
+
+// This shouldn't happen if getStaticPaths is correct, but guard anyway
+if (!community) {
+  return Astro.redirect('/communities', 302);
+}
+
+const properties = getPropertiesByCommunity(community.slug);
+const availableCount = properties.filter(
+  (p) => p.status === 'available' || p.status === 'coming-soon'
+).length;
+---
+
+<BaseLayout
+  title={community.name}
+  description={community.shortDescription}
+  ogImage={community.heroImage}
+>
+
+  <!-- ── Community Hero ─────────────────────────────────────────── -->
+  <section class="community-hero">
+    <div class="hero-image-wrap" aria-hidden="true">
+      {community.heroImage && (
+        <img src={community.heroImage} alt="" class="hero-image" />
+      )}
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="container hero-inner">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="/communities">Communities</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{community.name}</span>
+      </nav>
+
+      <h1 class="hero-title">{community.name}</h1>
+      <p class="hero-sub">{community.shortDescription}</p>
+
+      <div class="hero-meta">
+        {community.location && (
+          <span class="meta-chip">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {community.location}
+          </span>
+        )}
+        {availableCount > 0 && (
+          <span class="meta-chip meta-chip--green">
+            {availableCount} {availableCount === 1 ? 'home' : 'homes'} available
+          </span>
+        )}
+        {community.priceRange && (
+          <span class="meta-chip">{community.priceRange}</span>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Community Description ──────────────────────────────────── -->
+  <section class="section-sm" style="background: var(--color-surface);">
+    <div class="container description-row">
+      <p class="community-description">{community.longDescription}</p>
+    </div>
+  </section>
+
+  <!-- ── Homes Grid ────────────────────────────────────────────── -->
+  <section class="section" id="homes">
+    <div class="container">
+      <div class="homes-header">
+        <div>
+          <p class="section-label">Available Homes</p>
+          <h2 class="section-title">{community.name} Listings</h2>
+          <p class="section-subtitle">
+            {properties.length} {properties.length === 1 ? 'home' : 'homes'} in this community.
+            Use the search below to find a specific lot or address.
+          </p>
+        </div>
+      </div>
+
+      <!-- Search bar — filters the cards below without reloading the page -->
+      <PropertySearch />
+
+      {properties.length > 0 ? (
+        <div class="grid-3" id="homes-grid">
+          {properties.map((p) => <PropertyCard property={p} />)}
+        </div>
+      ) : (
+        <p class="empty-state">No listings yet — check back soon.</p>
+      )}
+    </div>
+  </section>
+
+  <!-- ── Contact ──────────────────────────────────────────────── -->
+  <section class="section" style="background: var(--color-surface-alt);" id="contact">
+    <div class="container contact-grid">
+      <div class="contact-text">
+        <p class="section-label">Interested?</p>
+        <h2 class="section-title">Ask us about {community.name}.</h2>
+        <p class="section-subtitle">
+          Have questions about a specific home, the neighborhood, or what's coming soon? Reach out and we'll follow up quickly.
+        </p>
+      </div>
+      <div>
+        <InquiryForm
+          contextType="community"
+          contextId={community.slug}
+          contextLabel={community.name}
+          heading={`Inquire about ${community.name}`}
+        />
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .community-hero {
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .hero-image-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(10, 25, 18, 0.90) 0%,
+      rgba(10, 25, 18, 0.45) 60%,
+      rgba(10, 25, 18, 0.15) 100%
+    );
+  }
+
+  /* Fallback when no image */
+  .community-hero:not(:has(.hero-image)) {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1a3328 100%);
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--space-12);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: rgba(255,255,255,0.6);
+    margin-bottom: var(--space-5);
+  }
+
+  .breadcrumb a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .breadcrumb a:hover {
+    color: rgba(255,255,255,0.9);
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 5vw, var(--font-size-5xl));
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-sub {
+    font-size: var(--font-size-lg);
+    color: rgba(255,255,255,0.8);
+    max-width: 56ch;
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    padding: var(--space-2) var(--space-4);
+    border-radius: 999px;
+  }
+
+  .meta-chip--green {
+    background: rgba(45, 106, 79, 0.6);
+    border-color: rgba(45, 106, 79, 0.8);
+  }
+
+  /* Description */
+  .description-row {
+    max-width: 72ch;
+  }
+
+  .community-description {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    line-height: 1.75;
+  }
+
+  /* Homes */
+  .homes-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: var(--space-8);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-16) 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+  }
+
+  /* Contact */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+    }
+  }
+</style>

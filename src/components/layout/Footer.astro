@@ -1,0 +1,132 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="/" class="logo" aria-label="Home">
+        <span class="logo-mark">KDG</span>
+        <span class="logo-name">Kelly Development Group</span>
+      </a>
+      <p class="footer-tagline">
+        Quality homes in communities you'll love to be part of.
+      </p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <span class="footer-nav-label">Communities</span>
+      <a href="/communities/park-central">Park Central</a>
+      <a href="/communities/grace-haven">Grace Haven</a>
+    </nav>
+
+    <nav class="footer-nav" aria-label="Footer quick links">
+      <span class="footer-nav-label">Quick Links</span>
+      <a href="/">Home</a>
+      <a href="/communities">All Communities</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <p>&copy; {year} Kelly Development Group. All rights reserved.</p>
+      <!-- Placeholder — add real license / disclosure text before launch -->
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-primary);
+    color: rgba(255,255,255,0.85);
+    margin-top: auto;
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--space-12);
+    padding-block: var(--space-16);
+  }
+
+  /* Brand */
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    margin-bottom: var(--space-4);
+  }
+
+  .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-sm);
+  }
+
+  .logo-name {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .footer-tagline {
+    font-size: var(--font-size-sm);
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    max-width: 28ch;
+  }
+
+  /* Nav columns */
+  .footer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .footer-nav-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: var(--space-1);
+  }
+
+  .footer-nav a {
+    font-size: var(--font-size-sm);
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .footer-nav a:hover {
+    color: #fff;
+  }
+
+  /* Bottom bar */
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-block: var(--space-5);
+  }
+
+  .footer-bottom p {
+    font-size: var(--font-size-xs);
+    color: rgba(255,255,255,0.45);
+  }
+
+  @media (max-width: 768px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+</style>

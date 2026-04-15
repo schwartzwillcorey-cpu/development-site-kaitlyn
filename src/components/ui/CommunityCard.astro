@@ -1,0 +1,131 @@
+---
+import type { Community } from '../../data/types';
+
+interface Props {
+  community: Community;
+}
+
+const { community } = Astro.props;
+const { slug, name, shortDescription, heroImage, priceRange, availableLots } = community;
+---
+
+<a href={`/communities/${slug}`} class="community-card">
+  <div class="card-image">
+    {heroImage ? (
+      <img src={heroImage} alt={name} loading="lazy" />
+    ) : (
+      <div class="img-placeholder" style="height:100%;">{name}</div>
+    )}
+    {availableLots !== undefined && availableLots > 0 && (
+      <span class="homes-chip">{availableLots} homes available</span>
+    )}
+  </div>
+
+  <div class="card-body">
+    <h3 class="card-name">{name}</h3>
+    <p class="card-description">{shortDescription}</p>
+
+    {priceRange && (
+      <p class="card-price-range">Starting from {priceRange.split('–')[0].trim()}</p>
+    )}
+
+    <span class="card-cta">View homes &rarr;</span>
+  </div>
+</a>
+
+<style>
+  .community-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    transition: box-shadow var(--transition), transform var(--transition);
+  }
+
+  .community-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+  }
+
+  /* Image */
+  .card-image {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--color-surface-alt);
+    overflow: hidden;
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 300ms ease;
+  }
+
+  .community-card:hover .card-image img {
+    transform: scale(1.04);
+  }
+
+  .homes-chip {
+    position: absolute;
+    bottom: var(--space-3);
+    left: var(--space-3);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(4px);
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Body */
+  .card-body {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    flex: 1;
+  }
+
+  .card-name {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .card-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .card-price-range {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: var(--space-2);
+    transition: gap var(--transition);
+  }
+
+  .community-card:hover .card-cta {
+    gap: var(--space-2);
+  }
+</style>

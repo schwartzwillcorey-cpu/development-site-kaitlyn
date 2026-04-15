@@ -1,0 +1,438 @@
+---
+/**
+ * Individual property page — /homes/[slug]
+ *
+ * Supports a sold/unavailable state without deleting the page.
+ * If a property is sold, a notice is shown at the top and similar homes
+ * from the same community are suggested below.
+ *
+ * Future: if individual QR codes per property are added, this is the page
+ * each QR code should point to.
+ */
+
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import StatusBadge from '../../components/ui/StatusBadge.astro';
+import PropertyMeta from '../../components/ui/PropertyMeta.astro';
+import InquiryForm from '../../components/ui/InquiryForm.astro';
+import PropertyCard from '../../components/ui/PropertyCard.astro';
+
+import { properties, getPropertyBySlug, getPropertiesByCommunity } from '../../data/properties';
+import { getCommunityBySlug } from '../../data/communities';
+
+export async function getStaticPaths() {
+  return properties.map((p) => ({
+    params: { slug: p.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const property = getPropertyBySlug(slug!);
+
+if (!property) {
+  return Astro.redirect('/communities', 302);
+}
+
+const community = getCommunityBySlug(property.communitySlug);
+
+const isSold = property.status === 'sold';
+const isUnavailable = property.status === 'sold' || property.status === 'pending';
+
+// Similar homes from same community (exclude this property, exclude sold)
+const similarHomes = getPropertiesByCommunity(property.communitySlug)
+  .filter((p) => p.id !== property.id && p.status !== 'sold')
+  .slice(0, 3);
+
+const formattedPrice = property.price.toLocaleString('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+});
+---
+
+<BaseLayout
+  title={`${property.address} — ${property.lotNumber}`}
+  description={`${property.beds} bed, ${property.baths} bath home at ${property.address} in ${community?.name ?? 'our community'}. ${property.sqft.toLocaleString()} sqft — ${formattedPrice}.`}
+  ogImage={property.images[0]}
+>
+
+  <!-- ── Sold / Unavailable notice ─────────────────────────────── -->
+  {isSold && (
+    <div class="sold-notice" role="alert">
+      <div class="container">
+        <strong>This home has sold.</strong> The page is kept live for reference.
+        {similarHomes.length > 0 && (
+          <span> See similar homes below or <a href={`/communities/${property.communitySlug}`}>browse all listings</a>.</span>
+        )}
+      </div>
+    </div>
+  )}
+
+  <!-- ── Page Header ────────────────────────────────────────────── -->
+  <section class="property-header">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="/communities">Communities</a>
+        <span aria-hidden="true">/</span>
+        <a href={`/communities/${property.communitySlug}`}>{community?.name}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{property.lotNumber}</span>
+      </nav>
+
+      <div class="property-title-row">
+        <div>
+          <div class="property-header-meta">
+            <StatusBadge status={property.status} />
+            <span class="community-link-chip">
+              <a href={`/communities/${property.communitySlug}`}>
+                {community?.name}
+              </a>
+            </span>
+          </div>
+          <h1 class="property-address">{property.address}</h1>
+          <p class="property-lot">{property.lotNumber}</p>
+        </div>
+        <div class="property-price-block">
+          <p class="price-label">List Price</p>
+          <p class="price-value">{isSold ? 'Sold' : formattedPrice}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Image Gallery ─────────────────────────────────────────── -->
+  {property.images.length > 0 && (
+    <section class="gallery-section">
+      <div class="container">
+        <div class:list={['gallery-grid', { 'gallery-single': property.images.length === 1 }]}>
+          {property.images.map((src, i) => (
+            <img
+              src={src}
+              alt={`${property.address} — photo ${i + 1}`}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              class:list={[{ 'gallery-main': i === 0 }]}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ── Main Content ───────────────────────────────────────────── -->
+  <section class="section">
+    <div class="container property-body">
+
+      <div class="property-content">
+        <!-- Facts -->
+        <PropertyMeta
+          price={property.price}
+          beds={property.beds}
+          baths={property.baths}
+          sqft={property.sqft}
+          lotNumber={property.lotNumber}
+        />
+
+        <!-- Description -->
+        <div class="property-description">
+          <h2 class="desc-heading">About this home</h2>
+          <p>{property.description}</p>
+        </div>
+
+        <!-- External listing link (Zillow, MLS, etc.) -->
+        {property.externalListingUrl && (
+          <div class="external-link-block">
+            <a
+              href={property.externalListingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-outline"
+            >
+              View on MLS / Zillow &rarr;
+            </a>
+            <p class="external-hint">Opens an external site — listing details may differ.</p>
+          </div>
+        )}
+
+        <!-- Back to community -->
+        <div class="back-link">
+          <a href={`/communities/${property.communitySlug}`} class="btn btn-ghost">
+            &larr; Back to {community?.name}
+          </a>
+        </div>
+      </div>
+
+      <!-- Inquiry form sidebar -->
+      <div class="property-sidebar">
+        {!isSold ? (
+          <InquiryForm
+            contextType="property"
+            contextId={property.slug}
+            contextLabel={`${property.address} — ${property.lotNumber}`}
+            heading="Schedule a showing"
+          />
+        ) : (
+          <div class="sold-sidebar-notice">
+            <p class="sold-sidebar-title">This home has sold.</p>
+            <p class="sold-sidebar-body">
+              Looking for something similar? Browse available homes in {community?.name}.
+            </p>
+            <a href={`/communities/${property.communitySlug}`} class="btn btn-primary" style="margin-top: 1rem; width: 100%; justify-content: center;">
+              Browse {community?.name}
+            </a>
+          </div>
+        )}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Similar Homes ─────────────────────────────────────────── -->
+  {similarHomes.length > 0 && (
+    <section class="section similar-section" style="background: var(--color-surface-alt);">
+      <div class="container">
+        <p class="section-label">More in {community?.name}</p>
+        <h2 class="section-title">Similar homes you may like</h2>
+        <div class="grid-3" style="margin-top: var(--space-8);">
+          {similarHomes.map((p) => <PropertyCard property={p} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+</BaseLayout>
+
+<style>
+  /* Sold notice banner */
+  .sold-notice {
+    background: var(--color-status-bg-sold);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-status-sold);
+  }
+
+  .sold-notice a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  /* Page header */
+  .property-header {
+    padding-top: var(--space-10);
+    padding-bottom: var(--space-8);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-5);
+    flex-wrap: wrap;
+  }
+  .breadcrumb a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .breadcrumb a:hover {
+    color: var(--color-primary);
+  }
+
+  .property-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .property-header-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .community-link-chip a {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+  }
+  .community-link-chip a:hover {
+    text-decoration: underline;
+  }
+
+  .property-address {
+    font-size: clamp(1.5rem, 4vw, var(--font-size-4xl));
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-2);
+  }
+
+  .property-lot {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .property-price-block {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .price-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+  }
+
+  .price-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1;
+  }
+
+  /* Gallery */
+  .gallery-section {
+    padding-block: var(--space-8);
+    background: var(--color-surface-alt);
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--space-3);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+
+  .gallery-grid.gallery-single {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-grid img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .gallery-main {
+    grid-row: 1 / span 2;
+    height: 100% !important;
+    min-height: 320px;
+    max-height: 520px;
+  }
+
+  /* Main body layout */
+  .property-body {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .property-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  /* Description */
+  .property-description {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+
+  .desc-heading {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+  }
+
+  .property-description p {
+    color: var(--color-text-muted);
+    line-height: 1.75;
+  }
+
+  /* External link */
+  .external-link-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .external-hint {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  /* Sold sidebar state */
+  .sold-sidebar-notice {
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+  }
+
+  .sold-sidebar-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-3);
+    color: var(--color-text);
+  }
+
+  .sold-sidebar-body {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+  }
+
+  .back-link {
+    padding-top: var(--space-4);
+  }
+
+  @media (max-width: 1000px) {
+    .property-body {
+      grid-template-columns: 1fr;
+    }
+    .property-sidebar {
+      order: -1; /* Show form above description on mobile */
+    }
+  }
+
+  @media (max-width: 640px) {
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+    .gallery-main {
+      grid-row: auto;
+      height: 260px !important;
+    }
+    .gallery-grid img {
+      height: 200px;
+    }
+    .property-price-block {
+      text-align: left;
+    }
+  }
+</style>

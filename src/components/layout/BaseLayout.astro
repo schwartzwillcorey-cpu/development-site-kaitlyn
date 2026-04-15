@@ -1,0 +1,66 @@
+---
+/**
+ * BaseLayout — wraps every page with <head>, Header, and Footer.
+ *
+ * Props:
+ *   title        — <title> tag content (required)
+ *   description  — <meta description> (optional)
+ *   ogImage      — open graph image path (optional)
+ */
+
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import '../../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'Browse available homes in our communities. Clean, modern new construction homes ready for move-in.',
+  ogImage = '/images/og-default.jpg',
+} = Astro.props;
+
+const siteTitle = 'Kelly Development Group';
+const fullTitle  = title === siteTitle ? title : `${title} | ${siteTitle}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:type" content="website" />
+
+    <!-- Favicon — replace with real assets before launch -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Inter font via Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <Header />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

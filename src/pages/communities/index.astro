@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import CommunityCard from '../../components/ui/CommunityCard.astro';
+import CTASection from '../../components/ui/CTASection.astro';
+
+import { communities } from '../../data/communities';
+import { getPropertiesByCommunity } from '../../data/properties';
+
+// Attach available count to each community for display
+const communitiesWithCounts = communities.map((c) => ({
+  ...c,
+  availableLots: getPropertiesByCommunity(c.slug).filter(
+    (p) => p.status === 'available' || p.status === 'coming-soon'
+  ).length,
+}));
+---
+
+<BaseLayout
+  title="Communities"
+  description="Browse homes across Maplewood Heights and Riverside Estates — two quality communities in Greenfield County."
+>
+
+  <!-- Page header -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Communities</span>
+      </nav>
+      <h1 class="page-title">Our Communities</h1>
+      <p class="page-sub">
+        Two communities, both built with care. Browse listings for each or scan the sign out front to go directly to that community's available homes.
+      </p>
+    </div>
+  </section>
+
+  <!-- Communities grid -->
+  <section class="section">
+    <div class="container">
+      <div class="grid-2">
+        {communitiesWithCounts.map((c) => <CommunityCard community={c} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Not sure which community is right for you?"
+    body="Reach out and we'll help you narrow it down based on what matters most to you."
+    primaryLabel="Contact Us"
+    primaryHref="/#contact"
+    secondaryLabel="Back to Home"
+    secondaryHref="/"
+  />
+
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--color-border-light);
+    background: var(--color-surface);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-5);
+  }
+
+  .breadcrumb a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .breadcrumb a:hover {
+    color: var(--color-primary);
+  }
+
+  .page-title {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-4);
+  }
+
+  .page-sub {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    max-width: 56ch;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .page-title {
+      font-size: var(--font-size-3xl);
+    }
+  }
+</style>

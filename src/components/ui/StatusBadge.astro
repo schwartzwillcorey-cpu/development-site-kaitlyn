@@ -1,0 +1,52 @@
+---
+import type { PropertyStatus } from '../../data/types';
+
+interface Props {
+  status: PropertyStatus;
+}
+
+const { status } = Astro.props;
+
+const labels: Record<PropertyStatus, string> = {
+  available:    'Available',
+  pending:      'Pending',
+  sold:         'Sold',
+  'coming-soon': 'Coming Soon',
+};
+---
+
+<span class={`status-badge status-${status}`}>
+  {labels[status]}
+</span>
+
+<style>
+  .status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+    text-transform: uppercase;
+  }
+
+  .status-available {
+    background: var(--color-status-bg-available);
+    color: var(--color-status-available);
+  }
+
+  .status-pending {
+    background: var(--color-status-bg-pending);
+    color: var(--color-status-pending);
+  }
+
+  .status-sold {
+    background: var(--color-status-bg-sold);
+    color: var(--color-status-sold);
+  }
+
+  .status-coming-soon {
+    background: var(--color-status-bg-coming-soon);
+    color: var(--color-status-coming-soon);
+  }
+</style>

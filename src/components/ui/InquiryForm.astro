@@ -1,0 +1,222 @@
+---
+/**
+ * InquiryForm — simple inquiry form.
+ *
+ * Renders as plain HTML form. The action/endpoint is not yet wired.
+ *
+ * TO CONNECT LATER:
+ *   Option A — Netlify Forms: add `netlify` attribute to <form> and configure
+ *              a notification email in Netlify dashboard. No backend needed.
+ *   Option B — Airtable: POST to Airtable API from a Netlify Function or an n8n webhook.
+ *   Option C — Email service: use a serverless function (Netlify Functions / Edge)
+ *              that calls SendGrid, Resend, etc.
+ *
+ * The hidden fields `context-type` and `context-id` carry which property or
+ * community the user was viewing, so every lead is traceable.
+ */
+
+interface Props {
+  contextType?: 'property' | 'community' | 'general';
+  contextId?: string;       // property slug or community slug
+  contextLabel?: string;    // human-readable label shown on the form
+  heading?: string;
+}
+
+const {
+  contextType = 'general',
+  contextId = '',
+  contextLabel = '',
+  heading = 'Interested? Let\'s talk.',
+} = Astro.props;
+---
+
+<div class="inquiry-form-wrapper">
+  <h2 class="form-heading">{heading}</h2>
+  {contextLabel && (
+    <p class="form-context">Inquiring about: <strong>{contextLabel}</strong></p>
+  )}
+
+  <!--
+    Add `data-netlify="true"` and `name="inquiry"` to wire Netlify Forms.
+    The hidden fields will automatically be included in the submission.
+  -->
+  <form
+    class="inquiry-form"
+    method="POST"
+    action="/thanks"
+    name="inquiry"
+    novalidate
+    id="inquiry-form"
+  >
+    <!-- Hidden context fields for lead routing -->
+    <input type="hidden" name="context-type" value={contextType} />
+    <input type="hidden" name="context-id"   value={contextId} />
+    <input type="hidden" name="context-label" value={contextLabel} />
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label" for="inq-name">Full Name</label>
+        <input
+          class="form-input"
+          type="text"
+          id="inq-name"
+          name="name"
+          placeholder="Jane Smith"
+          autocomplete="name"
+          required
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="inq-email">Email Address</label>
+        <input
+          class="form-input"
+          type="email"
+          id="inq-email"
+          name="email"
+          placeholder="jane@example.com"
+          autocomplete="email"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="inq-phone">Phone Number <span class="optional">(optional)</span></label>
+      <input
+        class="form-input"
+        type="tel"
+        id="inq-phone"
+        name="phone"
+        placeholder="(555) 000-0000"
+        autocomplete="tel"
+      />
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="inq-message">Message</label>
+      <textarea
+        class="form-input"
+        id="inq-message"
+        name="message"
+        placeholder="I'd like to schedule a showing or ask a question about this home..."
+        rows="4"
+        required
+      ></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary submit-btn">
+      Send Inquiry
+    </button>
+
+    <p class="form-disclaimer">
+      We'll respond within one business day. Your information is never shared.
+    </p>
+  </form>
+
+  <!-- Success message (shown via JS after submit) -->
+  <div class="form-success" id="form-success" aria-live="polite" hidden>
+    <p class="success-title">Message sent!</p>
+    <p class="success-body">Thank you for reaching out. We'll be in touch shortly.</p>
+  </div>
+</div>
+
+<script>
+  // Basic client-side form handling.
+  // Replace this script with real submission logic when backend is ready.
+  const form = document.getElementById('inquiry-form') as HTMLFormElement | null;
+  const successMsg = document.getElementById('form-success');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // TODO: Replace with actual fetch() call to your endpoint, Netlify function, or webhook.
+    // Example Netlify Forms fetch:
+    //   const data = new FormData(form);
+    //   await fetch('/', { method: 'POST', body: data });
+
+    // Simulate submission for now
+    form.hidden = true;
+    if (successMsg) successMsg.hidden = false;
+  });
+</script>
+
+<style>
+  .inquiry-form-wrapper {
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-xl);
+    padding: var(--space-10) var(--space-8);
+  }
+
+  .form-heading {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-2);
+  }
+
+  .form-context {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-6);
+  }
+
+  .inquiry-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+
+  .optional {
+    font-weight: 400;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+  }
+
+  .submit-btn {
+    align-self: flex-start;
+    padding: var(--space-4) var(--space-8);
+  }
+
+  .form-disclaimer {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-top: calc(-1 * var(--space-2));
+  }
+
+  /* Success state */
+  .form-success {
+    text-align: center;
+    padding: var(--space-12) 0;
+  }
+
+  .success-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .success-body {
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 600px) {
+    .inquiry-form-wrapper {
+      padding: var(--space-6);
+    }
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+    .submit-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

@@ -1,0 +1,327 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import CommunityCard from '../components/ui/CommunityCard.astro';
+import PropertyCard from '../components/ui/PropertyCard.astro';
+import CTASection from '../components/ui/CTASection.astro';
+import InquiryForm from '../components/ui/InquiryForm.astro';
+
+import { communities } from '../data/communities';
+import { getFeaturedProperties } from '../data/properties';
+
+const featuredHomes = getFeaturedProperties();
+---
+
+<BaseLayout
+  title="Kelly Development Group"
+  description="Browse quality new construction homes in Maplewood Heights and Riverside Estates. Clean, move-in ready homes in Greenfield County."
+>
+
+  <!-- ── Hero ────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <p class="section-label">New Construction Homes</p>
+        <h1 class="hero-heading">
+          Find your home in a community you'll love.
+        </h1>
+        <p class="hero-sub">
+          Quality new construction homes across two established Greenfield County communities. Clean finishes, thoughtful layouts, and neighborhoods worth settling into.
+        </p>
+        <div class="hero-actions">
+          <a href="/communities" class="btn btn-primary">Browse Communities</a>
+          <a href="#featured" class="btn btn-ghost">See Featured Homes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Overview ──────────────────────────────────────────────── -->
+  <section class="section overview-section">
+    <div class="container">
+      <div class="overview-grid">
+        <div class="overview-text">
+          <p class="section-label">Our Communities</p>
+          <h2 class="section-title">Built for real life, not showrooms.</h2>
+          <p class="overview-body">
+            We focus on a small number of communities and take our time doing them right.
+            Every home is built with durable materials, sensible layouts, and the kind of
+            attention to detail that shows up years after move-in — not just on opening day.
+          </p>
+          <p class="overview-body" style="margin-top: 1rem;">
+            Currently available homes span two communities in Greenfield County.
+            Browse both, or scan the QR code on any sign to go directly to that community's listings.
+          </p>
+        </div>
+        <div class="overview-stats">
+          <div class="stat">
+            <span class="stat-number">2</span>
+            <span class="stat-label">Communities</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">13+</span>
+            <span class="stat-label">Homes Available</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">3–4</span>
+            <span class="stat-label">Bedrooms</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">$220k+</span>
+            <span class="stat-label">Starting From</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Communities ───────────────────────────────────────────── -->
+  <section class="section communities-section" style="background: var(--color-surface-alt);">
+    <div class="container">
+      <p class="section-label">Where We Build</p>
+      <h2 class="section-title">Two communities, both worth your time.</h2>
+      <p class="section-subtitle" style="margin-bottom: var(--space-10);">
+        Each community has its own character. Browse homes in either, or visit the community page by scanning the sign.
+      </p>
+      <div class="grid-2">
+        {communities.map((c) => <CommunityCard community={c} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Featured Homes ─────────────────────────────────────────── -->
+  <section class="section" id="featured">
+    <div class="container">
+      <p class="section-label">Featured Homes</p>
+      <h2 class="section-title">Homes worth a closer look.</h2>
+      <p class="section-subtitle" style="margin-bottom: var(--space-10);">
+        A selection of our current standout listings. Click any home for full details.
+      </p>
+      {featuredHomes.length > 0 ? (
+        <div class="grid-3">
+          {featuredHomes.map((p) => <PropertyCard property={p} />)}
+        </div>
+      ) : (
+        <p style="color: var(--color-text-muted);">Check back soon for featured listings.</p>
+      )}
+      <div style="margin-top: var(--space-10); text-align: center;">
+        <a href="/communities" class="btn btn-outline">View All Communities</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA Banner ─────────────────────────────────────────────── -->
+  <CTASection
+    heading="Interested in a specific home or community?"
+    body="We'd love to answer your questions, schedule a showing, or walk you through what's available right now."
+    primaryLabel="Browse Communities"
+    primaryHref="/communities"
+    secondaryLabel="Get in Touch"
+    secondaryHref="#contact"
+  />
+
+  <!-- ── Contact / Inquiry ──────────────────────────────────────── -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-text">
+          <p class="section-label">Get in Touch</p>
+          <h2 class="section-title">We're easy to reach.</h2>
+          <p class="section-subtitle">
+            Whether you have a question about a specific home or just want to know what's available — send us a message and we'll get back to you quickly.
+          </p>
+          <ul class="contact-details">
+            <!-- Update with real contact details before launch -->
+            <li>
+              <span class="contact-detail-label">Email</span>
+              <a href="mailto:hello@kellydevelopmentgroup.com">hello@kellydevelopmentgroup.com</a>
+            </li>
+            <li>
+              <span class="contact-detail-label">Phone</span>
+              <a href="tel:+15550000000">(555) 000-0000</a>
+            </li>
+          </ul>
+        </div>
+        <div class="contact-form">
+          <InquiryForm
+            contextType="general"
+            heading="Send us a message"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1a3328 100%);
+    z-index: 0;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--space-24);
+  }
+
+  .hero-content {
+    max-width: 600px;
+  }
+
+  .hero-content .section-label {
+    color: rgba(255,255,255,0.6);
+  }
+
+  .hero-heading {
+    font-size: clamp(2rem, 5vw, var(--font-size-5xl));
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: var(--space-5);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-sub {
+    font-size: var(--font-size-lg);
+    color: rgba(255,255,255,0.75);
+    line-height: 1.65;
+    margin-bottom: var(--space-8);
+    max-width: 50ch;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .hero-actions .btn-ghost {
+    color: rgba(255,255,255,0.85);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transition: background var(--transition), border-color var(--transition);
+  }
+  .hero-actions .btn-ghost:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.5);
+  }
+
+  /* Overview */
+  .overview-section {
+    background: var(--color-bg);
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  .overview-body {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+  }
+
+  .overview-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .stat {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .stat-number {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Contact */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .contact-details {
+    list-style: none;
+    margin-top: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .contact-details li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .contact-detail-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .contact-details a {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .contact-details a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 900px) {
+    .overview-grid,
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-actions {
+      flex-direction: column;
+    }
+  }
+</style>
