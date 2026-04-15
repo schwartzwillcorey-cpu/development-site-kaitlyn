@@ -13,6 +13,7 @@ import PropertySearch from '../../components/search/PropertySearch.astro';
 import CTASection from '../../components/ui/CTASection.astro';
 import InquiryForm from '../../components/ui/InquiryForm.astro';
 
+import { asset } from '../../utils/asset';
 import { communities, getCommunityBySlug } from '../../data/communities';
 import { getPropertiesByCommunity } from '../../data/properties';
 
@@ -47,7 +48,7 @@ const availableCount = properties.filter(
   <section class="community-hero">
     <div class="hero-image-wrap" aria-hidden="true">
       {community.heroImage && (
-        <img src={community.heroImage} alt="" class="hero-image" />
+        <img src={asset(community.heroImage)} alt="" class="hero-image" />
       )}
       <div class="hero-overlay"></div>
     </div>

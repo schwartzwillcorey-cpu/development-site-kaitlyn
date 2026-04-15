@@ -1,6 +1,7 @@
 ---
 import type { Property } from '../../data/types';
 import StatusBadge from './StatusBadge.astro';
+import { asset } from '../../utils/asset';
 
 interface Props {
   property: Property;
@@ -25,7 +26,7 @@ const isSold = status === 'sold';
 >
   <div class="card-image">
     {thumbnail ? (
-      <img src={thumbnail} alt={`${address} — ${lotNumber}`} loading="lazy" />
+      <img src={asset(thumbnail)} alt={`${address} — ${lotNumber}`} loading="lazy" />
     ) : (
       <div class="img-placeholder" style="height:100%;">No image</div>
     )}

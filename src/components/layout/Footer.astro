@@ -1,4 +1,5 @@
 ---
+import { asset } from '../../utils/asset';
 const year = new Date().getFullYear();
 ---
 
@@ -17,10 +18,10 @@ const year = new Date().getFullYear();
         <p class="brokerage-label">Brokerage Partners</p>
         <div class="logos-row">
           <div class="logo-card logo-card--light">
-            <img src="/images/branding/moomaw-logo.jpg" alt="House Moomaw Realty Group" class="brokerage-logo" />
+            <img src={asset('/images/branding/moomaw-logo.jpg')} alt="House Moomaw Realty Group" class="brokerage-logo" />
           </div>
           <div class="logo-card logo-card--bare">
-            <img src="/images/branding/regal-logo.png" alt="Regal Realtors" class="brokerage-logo" />
+            <img src={asset('/images/branding/regal-logo.png')} alt="Regal Realtors" class="brokerage-logo" />
           </div>
         </div>
       </div>

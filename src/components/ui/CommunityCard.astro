@@ -1,5 +1,6 @@
 ---
 import type { Community } from '../../data/types';
+import { asset } from '../../utils/asset';
 
 interface Props {
   community: Community;
@@ -12,7 +13,7 @@ const { slug, name, shortDescription, heroImage, priceRange, availableLots } = c
 <a href={`/communities/${slug}`} class="community-card">
   <div class="card-image">
     {heroImage ? (
-      <img src={heroImage} alt={name} loading="lazy" />
+      <img src={asset(heroImage)} alt={name} loading="lazy" />
     ) : (
       <div class="img-placeholder" style="height:100%;">{name}</div>
     )}

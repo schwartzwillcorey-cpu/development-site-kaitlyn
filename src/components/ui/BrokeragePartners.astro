@@ -8,6 +8,8 @@
  *   - No other changes needed
  */
 
+import { asset } from '../../utils/asset';
+
 const partners = [
   {
     src: '/images/branding/moomaw-logo.jpg',
@@ -28,7 +30,7 @@ const partners = [
     <div class="logo-row">
       {partners.map((p) => (
         <div class:list={['logo-card', p.dark ? 'logo-card--dark' : 'logo-card--light']}>
-          <img src={p.src} alt={p.alt} class="logo-img" />
+          <img src={asset(p.src)} alt={p.alt} class="logo-img" />
         </div>
       ))}
     </div>

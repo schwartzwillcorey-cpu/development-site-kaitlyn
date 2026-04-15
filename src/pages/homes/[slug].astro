@@ -16,6 +16,7 @@ import PropertyMeta from '../../components/ui/PropertyMeta.astro';
 import InquiryForm from '../../components/ui/InquiryForm.astro';
 import PropertyCard from '../../components/ui/PropertyCard.astro';
 
+import { asset } from '../../utils/asset';
 import { properties, getPropertyBySlug, getPropertiesByCommunity } from '../../data/properties';
 import { getCommunityBySlug } from '../../data/communities';
 
@@ -108,7 +109,7 @@ const formattedPrice = property.price.toLocaleString('en-US', {
         <div class:list={['gallery-grid', { 'gallery-single': property.images.length === 1 }]}>
           {property.images.map((src, i) => (
             <img
-              src={src}
+              src={asset(src)}
               alt={`${property.address} — photo ${i + 1}`}
               loading={i === 0 ? 'eager' : 'lazy'}
               class:list={[{ 'gallery-main': i === 0 }]}

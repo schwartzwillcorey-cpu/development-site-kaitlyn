@@ -5,6 +5,7 @@ import PropertyCard from '../components/ui/PropertyCard.astro';
 import CTASection from '../components/ui/CTASection.astro';
 import InquiryForm from '../components/ui/InquiryForm.astro';
 
+import { asset } from '../utils/asset';
 import { communities } from '../data/communities';
 import { getFeaturedProperties } from '../data/properties';
 
@@ -20,7 +21,7 @@ const featuredHomes = getFeaturedProperties();
   <section class="hero">
     <div class="hero-bg" aria-hidden="true">
       {/* Drop your hero image at public/images/hero.jpg and it will appear here */}
-      <img src="/images/hero.jpg" alt="" class="hero-img" />
+      <img src={asset('/images/hero.jpg')} alt="" class="hero-img" />
       <div class="hero-overlay"></div>
     </div>
     <div class="container hero-inner">
