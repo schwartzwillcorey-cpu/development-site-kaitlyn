@@ -10,7 +10,6 @@
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import PropertyCard from '../../components/ui/PropertyCard.astro';
 import PropertySearch from '../../components/search/PropertySearch.astro';
-import CTASection from '../../components/ui/CTASection.astro';
 import InquiryForm from '../../components/ui/InquiryForm.astro';
 
 import { asset } from '../../utils/asset';
@@ -114,6 +113,22 @@ const availableCount = properties.filter(
       ) : (
         <p class="empty-state">No listings yet — check back soon.</p>
       )}
+    </div>
+  </section>
+
+  <!-- ── Financing Strip ───────────────────────────────────────── -->
+  <section class="section-sm financing-strip">
+    <div class="container">
+      <div class="financing-row">
+        <div class="financing-info">
+          <p class="financing-eyebrow">Zero Down Options Available</p>
+          <p class="financing-text">
+            Qualified buyers may be eligible for zero down payment programs on homes in this community.
+            Kelly Bergman, Mortgage Loan Originator, can get you pre-approved before you ever make an offer.
+          </p>
+        </div>
+        <a href="tel:+19034747570" class="btn btn-outline financing-cta">Talk to Kelly &rarr;</a>
+      </div>
     </div>
   </section>
 
@@ -278,10 +293,52 @@ const availableCount = properties.filter(
     align-items: start;
   }
 
+  /* Financing strip */
+  .financing-strip {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .financing-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .financing-eyebrow {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .financing-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    max-width: 60ch;
+    line-height: 1.6;
+  }
+
+  .financing-cta {
+    flex-shrink: 0;
+  }
+
   @media (max-width: 900px) {
     .contact-grid {
       grid-template-columns: 1fr;
       gap: var(--space-10);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .financing-cta {
+      width: 100%;
+      justify-content: center;
     }
   }
 

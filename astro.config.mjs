@@ -4,5 +4,6 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   output: 'static',
   site: 'https://schwartzwillcorey-cpu.github.io',
-  base: '/development-site-kaitlyn',
+  // Only apply base path on GitHub Pages — not during local dev
+  base: process.env.GITHUB_ACTIONS ? '/development-site-kaitlyn' : '/',
 });

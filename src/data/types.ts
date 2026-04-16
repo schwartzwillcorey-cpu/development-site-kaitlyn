@@ -38,4 +38,5 @@ export interface Property {
   featured: boolean;
   images: string[];               // Array of image paths or URLs; first image is the card thumbnail
   externalListingUrl?: string;    // Optional Zillow / MLS link
+  propertyTaxRate?: number;       // Annual rate as decimal (e.g. 0.018 = 1.8%). Pull from Airtable later.
 }

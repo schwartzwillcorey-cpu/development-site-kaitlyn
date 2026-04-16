@@ -182,7 +182,19 @@ const currentPath = Astro.url.pathname;
     height: 2px;
     background: var(--color-text);
     border-radius: 1px;
-    transition: transform var(--transition), opacity var(--transition);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  /* Animate to X when menu is open */
+  .nav-toggle[aria-expanded="true"] .hamburger-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav-toggle[aria-expanded="true"] .hamburger-bar:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .nav-toggle[aria-expanded="true"] .hamburger-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
   }
 
   /* Mobile nav drawer */

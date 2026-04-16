@@ -1,0 +1,667 @@
+---
+/**
+ * MortgageCalculator — payment estimator for individual property pages.
+ *
+ * Props:
+ *   homePrice        — property.price (pre-fills the Home Price input)
+ *   propertyTaxRate  — optional decimal (0.018 = 1.8%); falls back to DEFAULT_TAX_RATE
+ *                      Add this field to Airtable later for per-property accuracy.
+ *
+ * Assumptions baked in:
+ *   - 30-year fixed loan term
+ *   - No PMI (standard conventional PMI not modeled; add if needed)
+ *   - VA funding fee based on 2024 VA fee table (first-use / subsequent-use)
+ *   - Property tax default = 1.8% (East Texas estimate — update per county)
+ *   - Insurance default = $3,300/yr — update with real market data
+ *
+ * To update defaults: change the const block at the top of this file.
+ * To add per-property tax rates: populate property.propertyTaxRate in Airtable,
+ *   then pass it as a prop here — no other changes needed.
+ */
+
+interface Props {
+  homePrice: number;
+  propertyTaxRate?: number;
+}
+
+const { homePrice, propertyTaxRate } = Astro.props;
+
+// ── Defaults ────────────────────────────────────────────────────────────────
+// These are the only values you need to change as market conditions shift.
+const DEFAULT_TAX_RATE  = 0.018;   // 1.8% annual property tax (East Texas)
+const DEFAULT_INSURANCE = 3300;    // Annual homeowners insurance ($)
+const DEFAULT_RATE      = 6.30;    // Interest rate (%)
+const LOAN_TERM_MONTHS  = 360;     // 30-year fixed
+
+const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
+---
+
+<div class="calc-card">
+
+  <div class="calc-header">
+    <p class="calc-eyebrow">Payment Estimator</p>
+    <h3 class="calc-title">Estimate Your Monthly Payment</h3>
+  </div>
+
+  <div class="calc-body">
+
+    <!-- ── Inputs ────────────────────────────────────────────────── -->
+    <div class="calc-inputs">
+
+      <div class="calc-field">
+        <label class="calc-label" for="calc-price">Home Price</label>
+        <div class="calc-affix-wrap">
+          <span class="calc-prefix">$</span>
+          <input
+            class="calc-input calc-input--prefix"
+            type="number" id="calc-price"
+            min="0" step="1000"
+          />
+        </div>
+      </div>
+
+      <div class="calc-field">
+        <label class="calc-label">Down Payment</label>
+        <div class="calc-down-row">
+          <div class="calc-affix-wrap calc-affix-grow">
+            <span class="calc-prefix">$</span>
+            <input
+              class="calc-input calc-input--prefix"
+              type="number" id="calc-down-amt"
+              min="0" step="500"
+            />
+          </div>
+          <div class="calc-affix-wrap calc-affix-pct">
+            <input
+              class="calc-input calc-input--suffix"
+              type="number" id="calc-down-pct"
+              min="0" max="100" step="0.5"
+            />
+            <span class="calc-suffix">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-field">
+        <label class="calc-label" for="calc-rate">Interest Rate</label>
+        <div class="calc-affix-wrap">
+          <input
+            class="calc-input calc-input--suffix"
+            type="number" id="calc-rate"
+            min="0" max="30" step="0.01"
+          />
+          <span class="calc-suffix">%</span>
+        </div>
+      </div>
+
+      <!-- VA Toggle -->
+      <label class="calc-va-toggle" for="calc-va">
+        <span class="va-switch">
+          <input type="checkbox" id="calc-va" />
+          <span class="va-track"></span>
+        </span>
+        <span class="va-toggle-text">
+          <span class="va-toggle-main">Veteran / VA Loan</span>
+          <span class="va-toggle-sub">Zero down · No PMI</span>
+        </span>
+      </label>
+
+    </div>
+
+    <!-- ── VA Options (revealed when toggle ON) ─────────────────── -->
+    <div class="calc-va-panel" id="calc-va-panel" hidden>
+      <p class="va-options-label">VA Options</p>
+
+      <label class="calc-check" for="calc-include-fee">
+        <input type="checkbox" id="calc-include-fee" checked />
+        <span>Include VA Funding Fee</span>
+      </label>
+
+      <label class="calc-check" for="calc-fee-exempt">
+        <input type="checkbox" id="calc-fee-exempt" />
+        <span>
+          Funding Fee Exempt
+          <span class="calc-hint"> — disability, surviving spouse, etc.</span>
+        </span>
+      </label>
+
+      <label class="calc-check" for="calc-first-use">
+        <input type="checkbox" id="calc-first-use" checked />
+        <span>First-time VA Loan Use</span>
+      </label>
+    </div>
+
+    <!-- ── Results ──────────────────────────────────────────────── -->
+    <div class="calc-results">
+
+      <div class="calc-total-block">
+        <p class="calc-total-label">Estimated Monthly Payment</p>
+        <p class="calc-total-value" id="calc-monthly">$—</p>
+        <p class="calc-total-note">Principal, interest, taxes &amp; insurance</p>
+      </div>
+
+      <div class="calc-breakdown">
+        <div class="calc-brow">
+          <span>Principal &amp; Interest</span>
+          <strong id="calc-pi">—</strong>
+        </div>
+        <div class="calc-brow">
+          <span>Property Taxes</span>
+          <strong id="calc-tax">—</strong>
+        </div>
+        <div class="calc-brow">
+          <span>Homeowners Insurance</span>
+          <strong id="calc-ins">—</strong>
+        </div>
+        <div class="calc-brow calc-brow--va" id="calc-fee-row" hidden>
+          <span>
+            VA Funding Fee
+            <span class="calc-hint"> (financed into loan)</span>
+          </span>
+          <strong id="calc-fee-amt">—</strong>
+        </div>
+      </div>
+
+      <a href="tel:+19034747570" class="calc-cta">
+        Get exact numbers — call Kelly &rarr;
+      </a>
+
+    </div>
+
+    <p class="calc-disclaimer">
+      Estimate only. Rates, taxes, insurance, loan terms, and eligibility may vary.
+      Zero down and VA options are for qualified buyers.
+      <a href="tel:+19034747570">Contact Kelly</a> for exact numbers.
+    </p>
+
+  </div>
+</div>
+
+<script is:inline define:vars={{ homePrice, effectiveTaxRate, defaultInsurance: DEFAULT_INSURANCE, defaultRate: DEFAULT_RATE, termMonths: LOAN_TERM_MONTHS }}>
+(function () {
+
+  // ── Element refs ────────────────────────────────────────────────
+  const priceEl      = document.getElementById('calc-price');
+  const downAmtEl    = document.getElementById('calc-down-amt');
+  const downPctEl    = document.getElementById('calc-down-pct');
+  const rateEl       = document.getElementById('calc-rate');
+  const vaToggle     = document.getElementById('calc-va');
+  const vaPanel      = document.getElementById('calc-va-panel');
+  const includeFeeEl = document.getElementById('calc-include-fee');
+  const feeExemptEl  = document.getElementById('calc-fee-exempt');
+  const firstUseEl   = document.getElementById('calc-first-use');
+
+  const monthlyEl    = document.getElementById('calc-monthly');
+  const piEl         = document.getElementById('calc-pi');
+  const taxEl        = document.getElementById('calc-tax');
+  const insEl        = document.getElementById('calc-ins');
+  const feeRow       = document.getElementById('calc-fee-row');
+  const feeAmtEl     = document.getElementById('calc-fee-amt');
+
+  // ── Initialize inputs ────────────────────────────────────────────
+  priceEl.value   = homePrice;
+  downAmtEl.value = 0;
+  downPctEl.value = 0;
+  rateEl.value    = defaultRate;
+
+  // ── Helpers ─────────────────────────────────────────────────────
+
+  function fmt(n) {
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+
+  /**
+   * VA funding fee rates — 2024 VA fee table.
+   * Source: va.gov/housing-assistance/home-loans/funding-fee-and-closing-costs
+   */
+  function getVaFeeRate(downPct, firstUse) {
+    if (firstUse) {
+      if (downPct < 5)  return 0.0215;
+      if (downPct < 10) return 0.0150;
+      return 0.0125;
+    }
+    // Subsequent use
+    if (downPct < 5)  return 0.0330;
+    if (downPct < 10) return 0.0150;
+    return 0.0125;
+  }
+
+  // ── Core calculation ─────────────────────────────────────────────
+
+  function calculate() {
+    const price    = parseFloat(priceEl.value)   || 0;
+    const down     = parseFloat(downAmtEl.value) || 0;
+    const rate     = parseFloat(rateEl.value)    || 0;
+    const isVA     = vaToggle.checked;
+    const inclFee  = includeFeeEl.checked;
+    const exempt   = feeExemptEl.checked;
+    const firstUse = firstUseEl.checked;
+
+    const baseLoan = Math.max(0, price - down);
+    const downPct  = price > 0 ? (down / price) * 100 : 0;
+
+    // VA funding fee is financed into the loan, not paid upfront
+    let feeAmt = 0;
+    if (isVA && inclFee && !exempt && baseLoan > 0) {
+      feeAmt = baseLoan * getVaFeeRate(downPct, firstUse);
+    }
+
+    const loanAmt = baseLoan + feeAmt;
+    const r       = (rate / 100) / 12;
+    const n       = termMonths;
+
+    let pi = 0;
+    if (loanAmt === 0) {
+      pi = 0;
+    } else if (r === 0) {
+      pi = loanAmt / n;
+    } else {
+      const factor = Math.pow(1 + r, n);
+      pi = loanAmt * (r * factor) / (factor - 1);
+    }
+
+    const taxMonthly = (price * effectiveTaxRate) / 12;
+    const insMonthly = defaultInsurance / 12;
+    const total      = pi + taxMonthly + insMonthly;
+
+    // ── Render ────────────────────────────────────────────────────
+    monthlyEl.textContent = price > 0 ? fmt(total) : '$—';
+    piEl.textContent      = price > 0 ? fmt(pi)         : '—';
+    taxEl.textContent     = price > 0 ? fmt(taxMonthly) : '—';
+    insEl.textContent     = price > 0 ? fmt(insMonthly) : '—';
+
+    if (isVA && inclFee && !exempt && feeAmt > 0) {
+      feeRow.hidden        = false;
+      feeAmtEl.textContent = fmt(feeAmt);
+    } else {
+      feeRow.hidden = true;
+    }
+  }
+
+  // ── Event listeners ──────────────────────────────────────────────
+
+  // Home price: keep down % constant, update down $
+  priceEl.addEventListener('input', function () {
+    const price = parseFloat(priceEl.value)   || 0;
+    const pct   = parseFloat(downPctEl.value) || 0;
+    downAmtEl.value = Math.round(price * pct / 100);
+    calculate();
+  });
+
+  // Down $ → sync %
+  downAmtEl.addEventListener('input', function () {
+    const price = parseFloat(priceEl.value)   || 0;
+    const amt   = parseFloat(downAmtEl.value) || 0;
+    downPctEl.value = price > 0 ? ((amt / price) * 100).toFixed(1) : '0';
+    calculate();
+  });
+
+  // Down % → sync $
+  downPctEl.addEventListener('input', function () {
+    const price = parseFloat(priceEl.value)   || 0;
+    const pct   = parseFloat(downPctEl.value) || 0;
+    downAmtEl.value = Math.round(price * pct / 100);
+    calculate();
+  });
+
+  rateEl.addEventListener('input', calculate);
+
+  // VA toggle: show panel, zero out down payment
+  vaToggle.addEventListener('change', function () {
+    vaPanel.hidden = !vaToggle.checked;
+    if (vaToggle.checked) {
+      downAmtEl.value = 0;
+      downPctEl.value = '0';
+    }
+    calculate();
+  });
+
+  includeFeeEl.addEventListener('change', calculate);
+
+  // Exempt disables the "include fee" checkbox
+  feeExemptEl.addEventListener('change', function () {
+    includeFeeEl.disabled = feeExemptEl.checked;
+    calculate();
+  });
+
+  firstUseEl.addEventListener('change', calculate);
+
+  // ── Initial render ────────────────────────────────────────────────
+  calculate();
+
+})();
+</script>
+
+<style>
+  /* ── Card shell ──────────────────────────────────────────────────── */
+  .calc-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .calc-header {
+    padding: var(--space-5) var(--space-6) var(--space-4);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .calc-eyebrow {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .calc-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .calc-body {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  /* ── Inputs ─────────────────────────────────────────────────────── */
+  .calc-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .calc-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .calc-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+
+  .calc-affix-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .calc-prefix,
+  .calc-suffix {
+    position: absolute;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .calc-prefix { left: 12px; }
+  .calc-suffix { right: 12px; }
+
+  .calc-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    background: var(--color-bg);
+    outline: none;
+    transition: border-color 0.15s;
+    -moz-appearance: textfield;
+  }
+
+  .calc-input::-webkit-outer-spin-button,
+  .calc-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .calc-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(45, 74, 62, 0.12);
+  }
+
+  .calc-input--prefix { padding-left: 1.75rem; }
+  .calc-input--suffix { padding-right: 1.75rem; }
+
+  .calc-down-row {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .calc-affix-grow { flex: 1; }
+  .calc-affix-pct  { width: 84px; }
+
+  /* ── VA Toggle ──────────────────────────────────────────────────── */
+  .calc-va-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .calc-va-toggle:hover { background: var(--color-border-light); }
+
+  .va-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .va-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .va-track {
+    position: absolute;
+    inset: 0;
+    background: var(--color-border);
+    border-radius: 999px;
+    transition: background 0.2s;
+  }
+
+  .va-track::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .va-switch input:checked ~ .va-track            { background: var(--color-primary); }
+  .va-switch input:checked ~ .va-track::after     { transform: translateX(20px); }
+
+  .va-toggle-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .va-toggle-main {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .va-toggle-sub {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  /* ── VA Options panel ───────────────────────────────────────────── */
+  .calc-va-panel {
+    background: var(--color-surface-alt);
+    border: 1px solid var(--color-border-light);
+    border-left: 3px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .va-options-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .calc-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    cursor: pointer;
+  }
+
+  .calc-check input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  .calc-check input:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .calc-check span {
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .calc-hint {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+  }
+
+  /* ── Results ────────────────────────────────────────────────────── */
+  .calc-results {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .calc-total-block {
+    background: var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+  }
+
+  .calc-total-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: var(--space-2);
+  }
+
+  .calc-total-value {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: var(--space-1);
+  }
+
+  .calc-total-note {
+    font-size: var(--font-size-xs);
+    color: rgba(255,255,255,0.5);
+  }
+
+  .calc-breakdown {
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .calc-brow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px var(--space-4);
+    border-bottom: 1px solid var(--color-border-light);
+    font-size: var(--font-size-sm);
+  }
+
+  .calc-brow:last-child { border-bottom: none; }
+
+  .calc-brow span  { color: var(--color-text-muted); }
+  .calc-brow strong { color: var(--color-text); font-weight: 700; }
+
+  .calc-brow--va { background: var(--color-surface-alt); }
+
+  .calc-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px var(--space-6);
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .calc-cta:hover {
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  .calc-disclaimer {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    text-align: center;
+  }
+
+  .calc-disclaimer a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 480px) {
+    .calc-header { padding: var(--space-4) var(--space-5) var(--space-3); }
+    .calc-body   { padding: var(--space-5); }
+
+    /* Stack down payment inputs vertically on small screens */
+    .calc-down-row    { flex-direction: column; }
+    .calc-affix-pct   { width: 100%; }
+  }
+</style>

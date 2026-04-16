@@ -44,6 +44,7 @@ const year = new Date().getFullYear();
   <div class="footer-bottom">
     <div class="container">
       <p>&copy; {year} Kaitlyn Beebe — Realtor. All rights reserved.</p>
+      <p class="footer-financing">Financing support by Kelly Bergman, Mortgage Loan Originator.</p>
     </div>
   </div>
 </footer>
@@ -145,37 +146,6 @@ const year = new Date().getFullYear();
     display: block;
   }
 
-  /* Brokerage logos */
-  .brokerage-logos {
-    margin-top: var(--space-2);
-  }
-
-  .brokerage-label {
-    font-size: var(--font-size-xs);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
-    margin-bottom: var(--space-3);
-  }
-
-  .logos-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    flex-wrap: wrap;
-  }
-
-  .brokerage-logo {
-    height: 40px;
-    width: auto;
-    object-fit: contain;
-    border-radius: var(--radius-sm);
-    background: #fff;
-    padding: 4px 8px;
-    /* White background ensures logos read clearly on the dark footer */
-  }
-
   /* Nav columns */
   .footer-nav {
     display: flex;
@@ -211,6 +181,12 @@ const year = new Date().getFullYear();
   .footer-bottom p {
     font-size: var(--font-size-xs);
     color: rgba(255,255,255,0.45);
+  }
+
+  .footer-financing {
+    font-size: var(--font-size-xs);
+    color: rgba(255,255,255,0.28);
+    margin-top: var(--space-1);
   }
 
   @media (max-width: 768px) {

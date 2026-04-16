@@ -14,6 +14,7 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import StatusBadge from '../../components/ui/StatusBadge.astro';
 import PropertyMeta from '../../components/ui/PropertyMeta.astro';
 import InquiryForm from '../../components/ui/InquiryForm.astro';
+import MortgageCalculator from '../../components/ui/MortgageCalculator.astro';
 import PropertyCard from '../../components/ui/PropertyCard.astro';
 
 import { asset } from '../../utils/asset';
@@ -36,7 +37,6 @@ if (!property) {
 const community = getCommunityBySlug(property.communitySlug);
 
 const isSold = property.status === 'sold';
-const isUnavailable = property.status === 'sold' || property.status === 'pending';
 
 // Similar homes from same community (exclude this property, exclude sold)
 const similarHomes = getPropertiesByCommunity(property.communitySlug)
@@ -152,6 +152,32 @@ const formattedPrice = property.price.toLocaleString('en-US', {
               View on MLS / Zillow &rarr;
             </a>
             <p class="external-hint">Opens an external site — listing details may differ.</p>
+          </div>
+        )}
+
+        <!-- Payment calculator -->
+        <MortgageCalculator
+          homePrice={property.price}
+          propertyTaxRate={property.propertyTaxRate}
+        />
+
+        <!-- Financing callout -->
+        {!isSold && (
+          <div class="financing-callout">
+            <p class="financing-label">Financing</p>
+            <h3 class="financing-title">Zero Down Options Available</h3>
+            <p class="financing-body">
+              This home may qualify for zero down payment programs for qualified buyers.
+              Kelly Bergman, Mortgage Loan Originator, can walk you through your options before you make an offer.
+            </p>
+            <div class="financing-footer">
+              <div class="financing-contact">
+                <span class="financing-contact-name">Kelly Bergman</span>
+                <a href="tel:+19034747570" class="financing-contact-phone">(903) 474-7570</a>
+                <span class="financing-nmls">NMLS #1786042</span>
+              </div>
+              <a href="tel:+19034747570" class="btn btn-outline">Check My Options</a>
+            </div>
           </div>
         )}
 
@@ -350,6 +376,12 @@ const formattedPrice = property.price.toLocaleString('en-US', {
     align-items: start;
   }
 
+  /* Sticky sidebar — keeps the form visible while scrolling long content */
+  .property-sidebar {
+    position: sticky;
+    top: calc(64px + var(--space-6)); /* 64px header + breathing room */
+  }
+
   .property-content {
     display: flex;
     flex-direction: column;
@@ -408,6 +440,73 @@ const formattedPrice = property.price.toLocaleString('en-US', {
     line-height: 1.6;
   }
 
+  /* Financing callout */
+  .financing-callout {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-left: 3px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+
+  .financing-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .financing-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+
+  .financing-body {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    line-height: 1.65;
+    margin-bottom: var(--space-5);
+  }
+
+  .financing-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .financing-contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .financing-contact-name {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .financing-contact-phone {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .financing-contact-phone:hover {
+    text-decoration: underline;
+  }
+
+  .financing-nmls {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
   .back-link {
     padding-top: var(--space-4);
   }
@@ -417,7 +516,8 @@ const formattedPrice = property.price.toLocaleString('en-US', {
       grid-template-columns: 1fr;
     }
     .property-sidebar {
-      order: -1; /* Show form above description on mobile */
+      order: -1; /* Show form above content on mobile */
+      position: static; /* Disable sticky on stacked layout */
     }
   }
 

@@ -30,6 +30,9 @@ const featuredHomes = getFeaturedProperties();
         <h1 class="hero-heading">
           Find your home in a community you'll love.
         </h1>
+        <p class="hero-partnership">
+          Kaitlyn Beebe, Realtor &nbsp;·&nbsp; in partnership with Kelly Bergman, Mortgage Loan Originator
+        </p>
         <p class="hero-sub">
           Quality new construction homes across two communities. Clean finishes, thoughtful layouts, and neighborhoods worth settling into.
         </p>
@@ -125,18 +128,67 @@ const featuredHomes = getFeaturedProperties();
     secondaryHref="#contact"
   />
 
+  <!-- ── Your Home Buying Team ──────────────────────────────────── -->
+  <section class="section team-section">
+    <div class="container">
+      <p class="section-label">Your Team</p>
+      <h2 class="section-title">Your home buying team.</h2>
+      <p class="section-subtitle" style="margin-bottom: var(--space-12);">
+        Two specialists working together — one to find your home, one to fund it.
+      </p>
+      <div class="team-grid">
+        <div class="team-card team-card--primary">
+          <img src={asset('/images/kailyn headshot.jpg')} alt="Kaitlyn Beebe" class="team-headshot" />
+          <p class="team-role">Realtor</p>
+          <h3 class="team-name">Kaitlyn Beebe</h3>
+          <p class="team-desc">
+            Kaitlyn handles every step of finding and securing your home — community tours,
+            offer strategy, negotiations, and making sure closing day goes smoothly.
+          </p>
+          <ul class="team-contact-list">
+            <li><a href="mailto:kaitlyn@housemoomaw.com">kaitlyn@housemoomaw.com</a></li>
+            <li><a href="tel:+19039109283">(903) 910-9283</a></li>
+          </ul>
+          <a href="#contact" class="btn btn-primary team-btn">Schedule a Showing</a>
+        </div>
+        <div class="team-card">
+          <img src={asset('/images/kelly-headshot.jpg')} alt="Kelly Bergman" class="team-headshot" />
+          <p class="team-role">Mortgage Loan Originator</p>
+          <h3 class="team-name">Kelly Bergman</h3>
+          <p class="team-desc">
+            Kelly guides buyers through the financing side — pre-approval, loan programs,
+            and zero down options — so you know exactly what you can afford before you fall in love with a home.
+          </p>
+          <ul class="team-contact-list">
+            <li><a href="tel:+19034747570">(903) 474-7570</a></li>
+            <li><a href="mailto:team@loanswithkb.com">team@loanswithkb.com</a></li>
+            <li class="team-nmls">NMLS #1786042</li>
+          </ul>
+          <a href="tel:+19034747570" class="btn btn-outline team-btn">Talk to Kelly</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── Contact / Inquiry ──────────────────────────────────────── -->
   <section class="section" id="contact">
     <div class="container">
-      <div class="contact-grid">
-        <div class="contact-text">
-          <p class="section-label">Get in Touch</p>
-          <h2 class="section-title">We're easy to reach.</h2>
-          <p class="section-subtitle">
-            Whether you have a question about a specific home or just want to know what's available — send us a message and we'll get back to you quickly.
-          </p>
+      <div class="contact-header">
+        <p class="section-label">Get in Touch</p>
+        <h2 class="section-title">Reach the right person.</h2>
+        <p class="section-subtitle">
+          Questions about a home? That's Kaitlyn. Questions about how to pay for it? That's Kelly.
+        </p>
+      </div>
+      <div class="contact-split">
+
+        <div class="contact-col">
+          <div class="contact-col-header">
+            <p class="contact-col-role">Tours &amp; Showings</p>
+            <h3 class="contact-col-name">Kaitlyn Beebe</h3>
+            <p class="contact-col-title">Realtor</p>
+          </div>
           <ul class="contact-details">
-            <!-- Update with real contact details before launch -->
             <li>
               <span class="contact-detail-label">Email</span>
               <a href="mailto:kaitlyn@housemoomaw.com">kaitlyn@housemoomaw.com</a>
@@ -146,13 +198,42 @@ const featuredHomes = getFeaturedProperties();
               <a href="tel:+19039109283">(903) 910-9283</a>
             </li>
           </ul>
-        </div>
-        <div class="contact-form">
           <InquiryForm
             contextType="general"
-            heading="Send us a message"
+            heading="Send Kaitlyn a message"
           />
         </div>
+
+        <div class="contact-col contact-col--kelly">
+          <div class="contact-col-header">
+            <p class="contact-col-role">Financing &amp; Pre-Approval</p>
+            <h3 class="contact-col-name">Kelly Bergman</h3>
+            <p class="contact-col-title">Mortgage Loan Originator</p>
+          </div>
+          <ul class="contact-details" style="margin-top: 0; margin-bottom: var(--space-6);">
+            <li>
+              <span class="contact-detail-label">Phone</span>
+              <a href="tel:+19034747570">(903) 474-7570</a>
+            </li>
+            <li>
+              <span class="contact-detail-label">Email</span>
+              <a href="mailto:team@loanswithkb.com">team@loanswithkb.com</a>
+            </li>
+            <li>
+              <span class="contact-detail-label">NMLS</span>
+              <span style="font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-muted);">#1786042</span>
+            </li>
+          </ul>
+          <div class="kelly-contact-card">
+            <p class="kelly-card-heading">Ready to explore your options?</p>
+            <p class="kelly-card-body">
+              Kelly can walk you through pre-approval, loan programs, and zero down
+              options — before you ever make an offer.
+            </p>
+            <a href="tel:+19034747570" class="btn btn-outline kelly-call-btn">Call Kelly</a>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -297,12 +378,172 @@ const featuredHomes = getFeaturedProperties();
     letter-spacing: 0.06em;
   }
 
-  /* Contact */
-  .contact-grid {
+  /* Hero partnership line */
+  .hero-partnership {
+    font-size: var(--font-size-xs);
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-5);
+    margin-top: calc(-1 * var(--space-3));
+  }
+
+  /* Team section */
+  .team-section {
+    background: var(--color-surface-alt);
+  }
+
+  .team-grid {
     display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: var(--space-16);
+    grid-template-columns: 1.1fr 1fr;
+    gap: var(--space-6);
     align-items: start;
+  }
+
+  .team-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .team-card--primary {
+    border-color: var(--color-primary);
+    border-width: 2px;
+  }
+
+  .team-headshot {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    margin-bottom: var(--space-5);
+    border: 3px solid var(--color-border-light);
+  }
+
+  .team-card--primary .team-headshot {
+    border-color: var(--color-primary);
+  }
+
+  .team-role {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .team-name {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+
+  .team-desc {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    line-height: 1.7;
+    margin-bottom: var(--space-5);
+    flex: 1;
+  }
+
+  .team-contact-list {
+    list-style: none;
+    margin-bottom: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .team-contact-list a {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .team-contact-list a:hover {
+    text-decoration: underline;
+  }
+
+  .team-nmls {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .team-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Contact */
+  .contact-header {
+    max-width: 56ch;
+    margin-bottom: var(--space-10);
+  }
+
+  .contact-split {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-12);
+    align-items: start;
+  }
+
+  .contact-col-header {
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .contact-col-role {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    margin-bottom: var(--space-1);
+  }
+
+  .contact-col-name {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-1);
+  }
+
+  .contact-col-title {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .kelly-contact-card {
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+  }
+
+  .kelly-card-heading {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+
+  .kelly-card-body {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    line-height: 1.65;
+    margin-bottom: var(--space-6);
+  }
+
+  .kelly-call-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .contact-details {
@@ -339,7 +580,8 @@ const featuredHomes = getFeaturedProperties();
 
   @media (max-width: 900px) {
     .overview-grid,
-    .contact-grid {
+    .contact-split,
+    .team-grid {
       grid-template-columns: 1fr;
       gap: var(--space-10);
     }

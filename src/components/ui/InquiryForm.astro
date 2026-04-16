@@ -1,18 +1,11 @@
 ---
 /**
- * InquiryForm — simple inquiry form.
+ * InquiryForm — inquiry form, ready to be wired to a backend.
  *
- * Renders as plain HTML form. The action/endpoint is not yet wired.
+ * TO CONNECT: replace the fetch() endpoint in the <script> below with your
+ * webhook URL (n8n, Make, Zapier, or a serverless function).
  *
- * TO CONNECT LATER:
- *   Option A — Netlify Forms: add `netlify` attribute to <form> and configure
- *              a notification email in Netlify dashboard. No backend needed.
- *   Option B — Airtable: POST to Airtable API from a Netlify Function or an n8n webhook.
- *   Option C — Email service: use a serverless function (Netlify Functions / Edge)
- *              that calls SendGrid, Resend, etc.
- *
- * The hidden fields `context-type` and `context-id` carry which property or
- * community the user was viewing, so every lead is traceable.
+ * Hidden fields carry context (which property/community) so every lead is traceable.
  */
 
 interface Props {
@@ -36,10 +29,6 @@ const {
     <p class="form-context">Inquiring about: <strong>{contextLabel}</strong></p>
   )}
 
-  <!--
-    Add `data-netlify="true"` and `name="inquiry"` to wire Netlify Forms.
-    The hidden fields will automatically be included in the submission.
-  -->
   <form
     class="inquiry-form"
     method="POST"
@@ -122,28 +111,42 @@ const {
 </div>
 
 <script>
-  // Basic client-side form handling.
-  // Replace this script with real submission logic when backend is ready.
   const form = document.getElementById('inquiry-form') as HTMLFormElement | null;
   const successMsg = document.getElementById('form-success');
+  const submitBtn = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+    }
 
-    // TODO: Replace with actual fetch() call to your endpoint, Netlify function, or webhook.
-    // Example Netlify Forms fetch:
-    //   const data = new FormData(form);
-    //   await fetch('/', { method: 'POST', body: data });
-
-    // Simulate submission for now
-    form.hidden = true;
-    if (successMsg) successMsg.hidden = false;
+    try {
+      // TODO: replace this URL with your webhook endpoint (n8n, Make, etc.)
+      const ENDPOINT = '/api/inquiry';
+      await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      form.hidden = true;
+      if (successMsg) successMsg.hidden = false;
+    } catch {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Inquiry';
+      }
+      // Fallback: native submit to action="/thanks"
+      form.submit();
+    }
   });
 </script>
 
 <style>
   .inquiry-form-wrapper {
     background: var(--color-surface-alt);
+    border: 1px solid var(--color-border-light);
     border-radius: var(--radius-xl);
     padding: var(--space-10) var(--space-8);
   }

@@ -44,7 +44,7 @@ export const communities: Community[] = [
       'Elevated homes with premium finishes and generous space — for buyers who want more without compromising quality.',
     longDescription:
       'Grace Haven is designed for buyers who are ready to step up. Homes feature open-concept layouts, upgraded finishes, and the kind of details that make a house feel like a real home. The community offers a quieter, more private setting while staying connected to everything Greenfield County has to offer. All homes are priced above $300,000.',
-    heroImage: 'https://placehold.co/1600x900/2d4a3e/ffffff?text=Grace+Haven',
+    heroImage: '/images/properties/kailyn home dev shot 2.jpg',
     location: 'Greenfield County',
     totalLots: 18,
     availableLots: 6,
