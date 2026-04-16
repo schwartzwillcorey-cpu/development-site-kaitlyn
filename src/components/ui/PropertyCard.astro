@@ -48,6 +48,7 @@ const isSold = status === 'sold';
       <li>{baths} <span>ba</span></li>
       <li>{sqft.toLocaleString()} <span>sqft</span></li>
     </ul>
+    <span class="card-view-details">View Details &rarr;</span>
   </div>
 </a>
 
@@ -129,10 +130,11 @@ const isSold = status === 'sold';
   }
 
   .card-price {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-2xl);
     font-weight: 700;
     color: var(--color-primary);
     margin-top: var(--space-1);
+    letter-spacing: -0.02em;
   }
 
   .card-meta {
@@ -154,5 +156,26 @@ const isSold = status === 'sold';
     font-weight: 400;
     color: var(--color-text-muted);
     margin-left: 2px;
+  }
+
+  .card-view-details {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    margin-top: var(--space-3);
+    transition: gap var(--transition);
+  }
+
+  .property-card:hover .card-view-details {
+    gap: var(--space-2);
+  }
+
+  .property-card--sold .card-view-details {
+    color: var(--color-text-muted);
   }
 </style>
