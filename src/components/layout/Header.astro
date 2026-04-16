@@ -11,9 +11,8 @@ const currentPath = Astro.url.pathname;
 
 <header class="site-header">
   <div class="container header-inner">
-    <!-- Logo / wordmark — replace text with <img> once branding assets are ready -->
-    <a href="/" class="logo" aria-label="Kaitlyn Beebe — Home">
-      <span class="logo-mark">KB</span>
+    <a href={asset('/')} class="logo" aria-label="Kaitlyn Beebe — Home">
+      <img src={asset('/images/kailyn headshot.jpg')} alt="" class="logo-mark" aria-hidden="true" />
       <span class="logo-name">Kaitlyn Beebe — Realtor</span>
     </a>
 
@@ -108,18 +107,15 @@ const currentPath = Astro.url.pathname;
   }
 
   .logo-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: var(--color-primary);
-    color: #fff;
-    font-size: var(--font-size-xs);
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    border-radius: var(--radius-sm);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--color-primary);
     flex-shrink: 0;
+    display: block;
   }
 
   .logo-name {

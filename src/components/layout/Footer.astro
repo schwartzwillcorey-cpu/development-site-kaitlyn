@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
   <div class="container footer-inner">
     <div class="footer-brand">
       <a href={asset('/')} class="logo" aria-label="Home">
-        <span class="logo-mark">KB</span>
+        <img src={asset('/images/kailyn headshot.jpg')} alt="" class="logo-mark" aria-hidden="true" />
         <span class="logo-name">Kaitlyn Beebe — Realtor</span>
       </a>
       <p class="footer-tagline">
@@ -73,17 +73,15 @@ const year = new Date().getFullYear();
   }
 
   .logo-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    font-size: var(--font-size-xs);
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    border-radius: var(--radius-sm);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 2px solid rgba(255,255,255,0.15);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
+    display: block;
+    flex-shrink: 0;
   }
 
   .logo-name {
