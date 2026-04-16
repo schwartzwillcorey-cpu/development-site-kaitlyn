@@ -172,9 +172,12 @@ const formattedPrice = property.price.toLocaleString('en-US', {
             </p>
             <div class="financing-footer">
               <div class="financing-contact">
-                <span class="financing-contact-name">Kelly Bergman</span>
-                <a href="tel:+19034747570" class="financing-contact-phone">(903) 474-7570</a>
-                <span class="financing-nmls">NMLS #1786042</span>
+                <img src={asset('/images/kelly-headshot.jpg')} alt="Kelly Bergman" class="financing-headshot" />
+                <div class="financing-contact-info">
+                  <span class="financing-contact-name">Kelly Bergman</span>
+                  <a href="tel:+19034747570" class="financing-contact-phone">(903) 474-7570</a>
+                  <span class="financing-nmls">NMLS #1786042</span>
+                </div>
               </div>
               <a href="tel:+19034747570" class="btn btn-outline">Check My Options</a>
             </div>
@@ -481,6 +484,23 @@ const formattedPrice = property.price.toLocaleString('en-US', {
   }
 
   .financing-contact {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .financing-headshot {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 2px solid var(--color-border-light);
+    flex-shrink: 0;
+  }
+
+  .financing-contact-info {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
