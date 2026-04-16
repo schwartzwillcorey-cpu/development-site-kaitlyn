@@ -1,4 +1,9 @@
 ---
+import { asset } from '../../utils/asset';
+
+// Resolve absolute paths through the base-URL utility; leave anchor-only links unchanged
+const resolveHref = (h: string) => h.startsWith('/') ? asset(h) : h;
+
 interface Props {
   heading?: string;
   body?: string;
@@ -27,9 +32,9 @@ const {
       <p class="cta-body">{body}</p>
     </div>
     <div class="cta-actions">
-      <a href={primaryHref} class="btn btn-primary">{primaryLabel}</a>
+      <a href={resolveHref(primaryHref)} class="btn btn-primary">{primaryLabel}</a>
       {secondaryLabel && (
-        <a href={secondaryHref} class="btn btn-outline-white">{secondaryLabel}</a>
+        <a href={resolveHref(secondaryHref)} class="btn btn-outline-white">{secondaryLabel}</a>
       )}
     </div>
   </div>

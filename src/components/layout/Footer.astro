@@ -6,7 +6,7 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <a href="/" class="logo" aria-label="Home">
+      <a href={asset('/')} class="logo" aria-label="Home">
         <span class="logo-mark">KB</span>
         <span class="logo-name">Kaitlyn Beebe — Realtor</span>
       </a>
@@ -29,15 +29,15 @@ const year = new Date().getFullYear();
 
     <nav class="footer-nav" aria-label="Footer navigation">
       <span class="footer-nav-label">Communities</span>
-      <a href="/communities/park-central">Park Central</a>
-      <a href="/communities/grace-haven">Grace Haven</a>
+      <a href={asset('/communities/park-central')}>Park Central</a>
+      <a href={asset('/communities/grace-haven')}>Grace Haven</a>
     </nav>
 
     <nav class="footer-nav" aria-label="Footer quick links">
       <span class="footer-nav-label">Quick Links</span>
-      <a href="/">Home</a>
-      <a href="/communities">All Communities</a>
-      <a href="/#contact">Contact</a>
+      <a href={asset('/')}>Home</a>
+      <a href={asset('/communities')}>All Communities</a>
+      <a href={asset('/#contact')}>Contact</a>
     </nav>
   </div>
 

@@ -62,7 +62,7 @@ const formattedPrice = property.price.toLocaleString('en-US', {
       <div class="container">
         <strong>This home has sold.</strong> The page is kept live for reference.
         {similarHomes.length > 0 && (
-          <span> See similar homes below or <a href={`/communities/${property.communitySlug}`}>browse all listings</a>.</span>
+          <span> See similar homes below or <a href={asset(`/communities/${property.communitySlug}`)}>browse all listings</a>.</span>
         )}
       </div>
     </div>
@@ -72,11 +72,11 @@ const formattedPrice = property.price.toLocaleString('en-US', {
   <section class="property-header">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={asset('/')}>Home</a>
         <span aria-hidden="true">/</span>
-        <a href="/communities">Communities</a>
+        <a href={asset('/communities')}>Communities</a>
         <span aria-hidden="true">/</span>
-        <a href={`/communities/${property.communitySlug}`}>{community?.name}</a>
+        <a href={asset(`/communities/${property.communitySlug}`)}>{community?.name}</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{property.lotNumber}</span>
       </nav>
@@ -86,7 +86,7 @@ const formattedPrice = property.price.toLocaleString('en-US', {
           <div class="property-header-meta">
             <StatusBadge status={property.status} />
             <span class="community-link-chip">
-              <a href={`/communities/${property.communitySlug}`}>
+              <a href={asset(`/communities/${property.communitySlug}`)}>
                 {community?.name}
               </a>
             </span>
@@ -183,7 +183,7 @@ const formattedPrice = property.price.toLocaleString('en-US', {
 
         <!-- Back to community -->
         <div class="back-link">
-          <a href={`/communities/${property.communitySlug}`} class="btn btn-ghost">
+          <a href={asset(`/communities/${property.communitySlug}`)} class="btn btn-ghost">
             &larr; Back to {community?.name}
           </a>
         </div>
@@ -204,7 +204,7 @@ const formattedPrice = property.price.toLocaleString('en-US', {
             <p class="sold-sidebar-body">
               Looking for something similar? Browse available homes in {community?.name}.
             </p>
-            <a href={`/communities/${property.communitySlug}`} class="btn btn-primary" style="margin-top: 1rem; width: 100%; justify-content: center;">
+            <a href={asset(`/communities/${property.communitySlug}`)} class="btn btn-primary" style="margin-top: 1rem; width: 100%; justify-content: center;">
               Browse {community?.name}
             </a>
           </div>

@@ -54,8 +54,7 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
           <span class="calc-prefix">$</span>
           <input
             class="calc-input calc-input--prefix"
-            type="number" id="calc-price"
-            min="0" step="1000"
+            type="text" inputmode="numeric" id="calc-price"
           />
         </div>
       </div>
@@ -67,8 +66,7 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
             <span class="calc-prefix">$</span>
             <input
               class="calc-input calc-input--prefix"
-              type="number" id="calc-down-amt"
-              min="0" step="500"
+              type="text" inputmode="numeric" id="calc-down-amt"
             />
           </div>
           <div class="calc-affix-wrap calc-affix-pct">
@@ -106,29 +104,6 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
         </span>
       </label>
 
-    </div>
-
-    <!-- ── VA Options (revealed when toggle ON) ─────────────────── -->
-    <div class="calc-va-panel" id="calc-va-panel" hidden>
-      <p class="va-options-label">VA Options</p>
-
-      <label class="calc-check" for="calc-include-fee">
-        <input type="checkbox" id="calc-include-fee" checked />
-        <span>Include VA Funding Fee</span>
-      </label>
-
-      <label class="calc-check" for="calc-fee-exempt">
-        <input type="checkbox" id="calc-fee-exempt" />
-        <span>
-          Funding Fee Exempt
-          <span class="calc-hint"> — disability, surviving spouse, etc.</span>
-        </span>
-      </label>
-
-      <label class="calc-check" for="calc-first-use">
-        <input type="checkbox" id="calc-first-use" checked />
-        <span>First-time VA Loan Use</span>
-      </label>
     </div>
 
     <!-- ── Results ──────────────────────────────────────────────── -->
@@ -186,10 +161,6 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
   const downPctEl    = document.getElementById('calc-down-pct');
   const rateEl       = document.getElementById('calc-rate');
   const vaToggle     = document.getElementById('calc-va');
-  const vaPanel      = document.getElementById('calc-va-panel');
-  const includeFeeEl = document.getElementById('calc-include-fee');
-  const feeExemptEl  = document.getElementById('calc-fee-exempt');
-  const firstUseEl   = document.getElementById('calc-first-use');
 
   const monthlyEl    = document.getElementById('calc-monthly');
   const piEl         = document.getElementById('calc-pi');
@@ -198,17 +169,28 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
   const feeRow       = document.getElementById('calc-fee-row');
   const feeAmtEl     = document.getElementById('calc-fee-amt');
 
-  // ── Initialize inputs ────────────────────────────────────────────
-  priceEl.value   = homePrice;
-  downAmtEl.value = 0;
-  downPctEl.value = 0;
-  rateEl.value    = defaultRate;
-
   // ── Helpers ─────────────────────────────────────────────────────
 
   function fmt(n) {
     return '$' + Math.round(n).toLocaleString('en-US');
   }
+
+  // Strip commas before parsing a text-input value
+  function parseAmt(val) {
+    return parseFloat(String(val).replace(/,/g, '')) || 0;
+  }
+
+  // Format a dollar amount for display inside a text input
+  function fmtAmt(n) {
+    const v = Math.round(n);
+    return v > 0 ? v.toLocaleString('en-US') : '0';
+  }
+
+  // ── Initialize inputs ────────────────────────────────────────────
+  priceEl.value   = Number(homePrice).toLocaleString('en-US');
+  downAmtEl.value = '0';
+  downPctEl.value = 0;
+  rateEl.value    = defaultRate;
 
   /**
    * VA funding fee rates — 2024 VA fee table.
@@ -229,21 +211,18 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
   // ── Core calculation ─────────────────────────────────────────────
 
   function calculate() {
-    const price    = parseFloat(priceEl.value)   || 0;
-    const down     = parseFloat(downAmtEl.value) || 0;
-    const rate     = parseFloat(rateEl.value)    || 0;
+    const price    = parseAmt(priceEl.value);
+    const down     = parseAmt(downAmtEl.value);
+    const rate     = parseFloat(rateEl.value) || 0;
     const isVA     = vaToggle.checked;
-    const inclFee  = includeFeeEl.checked;
-    const exempt   = feeExemptEl.checked;
-    const firstUse = firstUseEl.checked;
 
     const baseLoan = Math.max(0, price - down);
     const downPct  = price > 0 ? (down / price) * 100 : 0;
 
-    // VA funding fee is financed into the loan, not paid upfront
+    // VA funding fee financed into the loan — assumes first-use (most common)
     let feeAmt = 0;
-    if (isVA && inclFee && !exempt && baseLoan > 0) {
-      feeAmt = baseLoan * getVaFeeRate(downPct, firstUse);
+    if (isVA && baseLoan > 0) {
+      feeAmt = baseLoan * getVaFeeRate(downPct, true);
     }
 
     const loanAmt = baseLoan + feeAmt;
@@ -270,7 +249,7 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
     taxEl.textContent     = price > 0 ? fmt(taxMonthly) : '—';
     insEl.textContent     = price > 0 ? fmt(insMonthly) : '—';
 
-    if (isVA && inclFee && !exempt && feeAmt > 0) {
+    if (isVA && feeAmt > 0) {
       feeRow.hidden        = false;
       feeAmtEl.textContent = fmt(feeAmt);
     } else {
@@ -282,49 +261,49 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
 
   // Home price: keep down % constant, update down $
   priceEl.addEventListener('input', function () {
-    const price = parseFloat(priceEl.value)   || 0;
+    const price = parseAmt(priceEl.value);
     const pct   = parseFloat(downPctEl.value) || 0;
-    downAmtEl.value = Math.round(price * pct / 100);
+    downAmtEl.value = fmtAmt(price * pct / 100);
     calculate();
+  });
+
+  // Format price with commas on blur
+  priceEl.addEventListener('blur', function () {
+    const v = parseAmt(priceEl.value);
+    if (v > 0) priceEl.value = v.toLocaleString('en-US');
   });
 
   // Down $ → sync %
   downAmtEl.addEventListener('input', function () {
-    const price = parseFloat(priceEl.value)   || 0;
-    const amt   = parseFloat(downAmtEl.value) || 0;
+    const price = parseAmt(priceEl.value);
+    const amt   = parseAmt(downAmtEl.value);
     downPctEl.value = price > 0 ? ((amt / price) * 100).toFixed(1) : '0';
     calculate();
   });
 
+  // Format down amount with commas on blur
+  downAmtEl.addEventListener('blur', function () {
+    downAmtEl.value = fmtAmt(parseAmt(downAmtEl.value));
+  });
+
   // Down % → sync $
   downPctEl.addEventListener('input', function () {
-    const price = parseFloat(priceEl.value)   || 0;
+    const price = parseAmt(priceEl.value);
     const pct   = parseFloat(downPctEl.value) || 0;
-    downAmtEl.value = Math.round(price * pct / 100);
+    downAmtEl.value = fmtAmt(price * pct / 100);
     calculate();
   });
 
   rateEl.addEventListener('input', calculate);
 
-  // VA toggle: show panel, zero out down payment
+  // VA toggle: zero out down payment (VA loans are typically zero down)
   vaToggle.addEventListener('change', function () {
-    vaPanel.hidden = !vaToggle.checked;
     if (vaToggle.checked) {
-      downAmtEl.value = 0;
+      downAmtEl.value = '0';
       downPctEl.value = '0';
     }
     calculate();
   });
-
-  includeFeeEl.addEventListener('change', calculate);
-
-  // Exempt disables the "include fee" checkbox
-  feeExemptEl.addEventListener('change', function () {
-    includeFeeEl.disabled = feeExemptEl.checked;
-    calculate();
-  });
-
-  firstUseEl.addEventListener('change', calculate);
 
   // ── Initial render ────────────────────────────────────────────────
   calculate();
@@ -512,54 +491,6 @@ const effectiveTaxRate = propertyTaxRate ?? DEFAULT_TAX_RATE;
   .va-toggle-sub {
     font-size: var(--font-size-xs);
     color: var(--color-text-muted);
-  }
-
-  /* ── VA Options panel ───────────────────────────────────────────── */
-  .calc-va-panel {
-    background: var(--color-surface-alt);
-    border: 1px solid var(--color-border-light);
-    border-left: 3px solid var(--color-primary);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .va-options-label {
-    font-size: var(--font-size-xs);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-primary);
-    margin-bottom: var(--space-1);
-  }
-
-  .calc-check {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-2);
-    cursor: pointer;
-  }
-
-  .calc-check input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    margin-top: 2px;
-    flex-shrink: 0;
-    accent-color: var(--color-primary);
-    cursor: pointer;
-  }
-
-  .calc-check input:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .calc-check span {
-    font-size: var(--font-size-sm);
-    color: var(--color-text);
-    line-height: 1.4;
   }
 
   .calc-hint {

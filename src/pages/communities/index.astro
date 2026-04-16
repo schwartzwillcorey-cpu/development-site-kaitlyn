@@ -3,6 +3,7 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import CommunityCard from '../../components/ui/CommunityCard.astro';
 import CTASection from '../../components/ui/CTASection.astro';
 
+import { asset } from '../../utils/asset';
 import { communities } from '../../data/communities';
 import { getPropertiesByCommunity } from '../../data/properties';
 
@@ -24,7 +25,7 @@ const communitiesWithCounts = communities.map((c) => ({
   <section class="page-hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+        <a href={asset('/')}>Home</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">Communities</span>
       </nav>

@@ -10,7 +10,7 @@ const { community } = Astro.props;
 const { slug, name, shortDescription, heroImage, priceRange, availableLots } = community;
 ---
 
-<a href={`/communities/${slug}`} class="community-card">
+<a href={asset(`/communities/${slug}`)} class="community-card">
   <div class="card-image">
     {heroImage ? (
       <img src={asset(heroImage)} alt={name} loading="lazy" />

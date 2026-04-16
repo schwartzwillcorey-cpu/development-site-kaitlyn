@@ -19,7 +19,7 @@ const isSold = status === 'sold';
 ---
 
 <a
-  href={`/homes/${slug}`}
+  href={asset(`/homes/${slug}`)}
   class:list={['property-card', { 'property-card--sold': isSold }]}
   data-lot={lotNumber.toLowerCase()}
   data-address={address.toLowerCase()}

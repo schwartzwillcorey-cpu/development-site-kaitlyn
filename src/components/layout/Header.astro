@@ -1,7 +1,9 @@
 ---
+import { asset } from '../../utils/asset';
+
 const navLinks = [
-  { href: '/',             label: 'Home' },
-  { href: '/communities',  label: 'Communities' },
+  { href: asset('/'),             label: 'Home' },
+  { href: asset('/communities'),  label: 'Communities' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -25,7 +27,7 @@ const currentPath = Astro.url.pathname;
           {label}
         </a>
       ))}
-      <a href="/#contact" class="btn btn-primary btn-sm">Contact Us</a>
+      <a href={asset('/#contact')} class="btn btn-primary btn-sm">Contact Us</a>
     </nav>
 
     <!-- Mobile menu toggle -->
@@ -51,7 +53,7 @@ const currentPath = Astro.url.pathname;
         {label}
       </a>
     ))}
-    <a href="/#contact" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+    <a href={asset('/#contact')} class="btn btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
       Contact Us
     </a>
   </nav>
